@@ -1,0 +1,153 @@
+/* Hunar (हुनर) - Official Institutional Styling & Textured Agricultural Theme */
+
+/* ==========================================================================
+   1. AGRICULTURAL TEXTURED BACKGROUND & RICH LINEN TONES
+   ========================================================================== */
+body {
+  background-color: #D6CCBC;
+  /* Distinctive Agricultural Terraced Farmland & Geometric Wheat Furrow Pattern */
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(15, 56, 42, 0.04) 0%, transparent 70%),
+    radial-gradient(circle at 100% 100%, rgba(133, 86, 40, 0.05) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235A4D33' fill-opacity='0.065'%3E%3Cpath d='M0 25 L25 0 M100 75 L75 100 M0 75 L75 0 M100 25 L25 100' stroke='%235A4D33' stroke-width='0.8' stroke-opacity='0.05'/%3E%3Cpath d='M50 15 C54 22 58 26 50 35 C42 26 46 22 50 15 Z'/%3E%3Cpath d='M50 65 C54 72 58 76 50 85 C42 76 46 72 50 65 Z'/%3E%3Cpath d='M15 50 C22 54 26 58 35 50 C26 42 22 46 15 50 Z'/%3E%3Cpath d='M65 50 C72 54 76 58 85 50 C76 42 72 46 65 50 Z'/%3E%3Ccircle cx='50' cy='50' r='4'/%3E%3Ccircle cx='0' cy='0' r='3'/%3E%3Ccircle cx='100' cy='0' r='3'/%3E%3Ccircle cx='0' cy='100' r='3'/%3E%3Ccircle cx='100' cy='100' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
+/* ==========================================================================
+   2. SIMPLE SOBER REVOLVING LOGO (CLEAN & SUBTLE)
+   ========================================================================== */
+@keyframes sober-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sober-orbit-ring {
+  animation: sober-spin-slow 24s linear infinite;
+  transform-origin: center;
+}
+
+.sober-logo-badge {
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.sober-logo-badge:hover {
+  transform: scale(1.04);
+  border-color: #C59B27;
+}
+
+/* ==========================================================================
+   3. NAVIGATION & CARDS
+   ========================================================================== */
+.nav-tab {
+  color: #5C544D;
+  transition: all 0.15s ease-in-out;
+}
+
+.nav-tab:hover {
+  color: #181614;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-tab.active {
+  background-color: #FFFFFF;
+  color: #0F382A;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(35, 30, 21, 0.12);
+}
+
+/* Card Subtle Elevation */
+.nqr-card-item {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.nqr-card-item:hover {
+  border-color: #0F382A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(35, 30, 21, 0.12);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #D6CCBC;
+}
+::-webkit-scrollbar-thumb {
+  background: #B8AC97;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8A7A58;
+}
+
+/* Leaflet Map Customization */
+.leaflet-container {
+  background-color: #D2C7B6;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+  border-radius: 16px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  background: #FAF8F5;
+  border: 1px solid #DDD5C4;
+  box-shadow: 0 8px 20px -4px rgba(35, 30, 21, 0.15);
+  color: #181614;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+  line-height: 1.5;
+}
+
+.leaflet-popup-tip {
+  background: #FAF8F5;
+}
+
+/* Audio Level Canvas Container */
+.audio-visualizer-box {
+  background: #181614;
+  border: 1px solid #332C25;
+}
+
+/* Evaluation Success Highlight Pulse */
+@keyframes eval-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    transform: scale(1.015);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    transform: scale(1);
+  }
+}
+
+.eval-success-pulse {
+  animation: eval-pulse 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  border-color: #0F382A !important;
+}
+
+/* Floating Toast Notification */
+#eval-toast {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(-20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#eval-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
