@@ -279,17 +279,17 @@ const DISTRICT_DATASETS = {
 // 3. SAMPLE BENEFICIARY PROFILES
 // ============================================================================
 const DEMO_PROFILES = {
-  agro_mill: { name: "Chhedilal Verma", location: "Tindwari Village, Banda (UP)", emoji: "🌾",
+  agro_mill: { emoji: "🌾", name: "Chhedilal Verma", location: "Tindwari Village, Banda (UP)",
     text: "हम 7 साल से दाल मिल में काम करते हैं, चना और अरहर का ग्रेडिंग और पिसाई करते हैं। कोई सरकारी प्रमाण पत्र नहीं है।", expYears: "7 Years Practical Work" },
-  solar_pump: { name: "Ramu Prajapati", location: "Baberu Block, Banda (UP)", emoji: "⚡",
+  solar_pump: { emoji: "⚡", name: "Ramu Prajapati", location: "Baberu Block, Banda (UP)",
     text: "हम 8 साल से गाँव में ट्यूबवेल और सोलर पंप की मोटर रिपेयर करते हैं। खेत की सिंचाई वाला सारा काम जानते हैं।", expYears: "8 Years Practical Work" },
-  rural_mason: { name: "Ramesh Kumar", location: "Naraini Block, Banda (UP)", emoji: "🧱",
+  rural_mason: { emoji: "🧱", name: "Ramesh Kumar", location: "Naraini Block, Banda (UP)",
     text: "हम 9 साल से राजमिस्त्री का काम कर रहे हैं, खेत की मेड़बंदी, पानी की टंकी और छत ढलाई का काम करते हैं।", expYears: "9 Years Practical Work" },
-  dairy: { name: "Sunita Devi", location: "Atarra, Banda (UP)", emoji: "🥛",
+  dairy: { emoji: "🥛", name: "Sunita Devi", location: "Atarra, Banda (UP)",
     text: "हम 6 साल से 15 गाय-भैंस का दूध उत्पादन और दुग्ध संग्रह केंद्र में चिलर मशीन चलाते हैं।", expYears: "6 Years Practical Work" },
-  tailor: { name: "Shanti Bai", location: "Bisanda, Banda (UP)", emoji: "🧵",
+  tailor: { emoji: "🧵", name: "Shanti Bai", location: "Bisanda, Banda (UP)",
     text: "हम 12 साल से गाँव में सिलाई का काम करते हैं, ब्लाउज, कुर्ता और बच्चों के कपड़े सिलते हैं।", expYears: "12 Years Practical Work" },
-  leather: { name: "Kallu Ahirwar", location: "Mahuwa Block, Banda (UP)", emoji: "👞",
+  leather: { emoji: "👞", name: "Kallu Ahirwar", location: "Mahuwa Block, Banda (UP)",
     text: "हम कई सालों से चमड़े के जूते और बेल्ट हाथ से बनाते हैं, कोई प्रमाण पत्र नहीं है और शहर 60 किमी दूर है।", expYears: "10+ Years Practical Work" }
 };
 
@@ -611,9 +611,9 @@ function drawWaveform(now) {
   const gap = w / WF_BARS, bw = gap * 0.55;
   const live = isRecording || demoTyping;
   const grad = wfCtx.createLinearGradient(0, h, 0, 0);
-  grad.addColorStop(0, live ? '#1d7a4b' : '#5a4636');
-  grad.addColorStop(0.6, live ? '#ffa30f' : '#8a6a4a');
-  grad.addColorStop(1, live ? '#ffd98a' : '#a8855c');
+  grad.addColorStop(0, live ? '#0f6b4c' : '#1d3a2e');
+  grad.addColorStop(0.6, live ? '#34d399' : '#2c5a47');
+  grad.addColorStop(1, live ? '#f0b93a' : '#3b6b57');
   wfCtx.fillStyle = grad;
   for (let i = 0; i < WF_BARS; i++) {
     const bh = Math.max(4, wfLevels[i] * (h - 6));
@@ -977,8 +977,8 @@ function handleEvaluateButtonClick() {
       const { qp, isReachable } = currentMatch;
       playSuccessTone();
       FX.burst();
-      fireConfetti();
       card.classList.remove('eval-pulse'); void card.offsetWidth; card.classList.add('eval-pulse');
+      fireConfetti();
       saveIntake(currentMatch);
       evalBtn.innerHTML = `<i data-lucide="badge-check" class="w-5 h-5"></i><span>Verified · NSQF Level ${qp.nsqfLevel} · saved to register</span>`;
       showEvalToast(`Matched: ${qp.title}`, `${qp.qpCode} · ${qp.distanceKm} km · ${isReachable ? 'reachable in one day' : 'flagged for mobile van'}`);
@@ -1006,7 +1006,7 @@ function fireConfetti() {
   if (reducedMotion) return;
   const canvas = $('confetti'), ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  const colors = ['#ffa30f', '#e8412c', '#2a2f8f', '#1d7a4b', '#ff7eb6', '#1a1210'];
+  const colors = ['#34d399', '#f0b93a', '#5eead4', '#fde68a', '#ffffff'];
   const origin = $('rpl-main-card').getBoundingClientRect();
   const ox = origin.left + origin.width / 2, oy = Math.max(80, origin.top + 80);
   const parts = Array.from({ length: 140 }, () => {
@@ -1100,7 +1100,7 @@ function renderHistory() {
     return `
     <tr class="${fresh ? 'fresh' : ''}">
       <td><div class="font-bold">${esc(e.name)}</div><div class="text-xs text-mut">${esc(e.loc)}</div></td>
-      <td><div class="font-semibold">${esc(e.title)}</div><div class="mono text-xs" style="color:var(--indigo)">${esc(e.qp)}</div></td>
+      <td><div class="font-semibold">${esc(e.title)}</div><div class="mono text-xs" style="color:var(--em)">${esc(e.qp)}</div></td>
       <td><span class="chip chip-gold mono">L${esc(e.level)}</span></td>
       <td class="text-xs text-mut" style="min-width:150px">${esc(e.center)}</td>
       <td>${e.reachable ? '<span class="chip chip-em">Reachable</span>' : '<span class="chip chip-rose">Void</span>'}</td>
@@ -1217,20 +1217,6 @@ function copyShareLink() {
   else { $('sync-share').select(); document.execCommand('copy'); done(); }
 }
 
-// Ink splats on click: purely decorative
-document.addEventListener('pointerdown', (e) => {
-  if (reducedMotion || e.pointerType === 'touch') return;
-  const colors = ['#ffa30f', '#e8412c', '#2a2f8f', '#ff7eb6'];
-  for (let i = 0; i < 7; i++) {
-    const d = document.createElement('div');
-    const size = 5 + Math.random() * 9, a = Math.random() * Math.PI * 2, dist = 18 + Math.random() * 38;
-    d.className = 'ink-splat';
-    d.style.cssText = `left:${e.clientX - size / 2}px;top:${e.clientY - size / 2}px;width:${size}px;height:${size}px;background:${colors[i % 4]};border:1.5px solid #1a1210`;
-    document.body.appendChild(d);
-    d.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(a) * dist}px,${Math.sin(a) * dist}px) scale(.2)`, opacity: 0 }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = () => d.remove();
-  }
-}, { passive: true });
-
 // ============================================================================
 // 13. DISTRICT MAP + AGGREGATION
 // ============================================================================
@@ -1282,7 +1268,7 @@ function renderDistrictData(districtKey) {
     leafletMap.flyTo(data.center, data.zoom, { duration: reducedMotion ? 0 : 1.1 });
 
     data.clusters.forEach((c, i) => {
-      const color = c.isVoid ? '#e8412c' : '#1d7a4b';
+      const color = c.isVoid ? '#fb7185' : '#34d399';
       const circle = L.circle([c.lat, c.lng], { color, fillColor: color, fillOpacity: 0.22, weight: 2, radius: c.artisans * 22 }).addTo(leafletMap);
       const pin = L.marker([c.lat, c.lng], {
         icon: L.divIcon({ className: '', html: `<div class="pulse-pin" style="--c:${color}"><i></i></div>`, iconSize: [16, 16], iconAnchor: [8, 8] })
@@ -1295,7 +1281,7 @@ function renderDistrictData(districtKey) {
 
   const max = Math.max(...data.clusters.map((c) => c.artisans));
   $('cluster-evidence-list').innerHTML = data.clusters.map((c, i) => `
-    <button class="inset p-4 w-full text-left block hover:bg-[#ffd98a] transition" onclick="focusCluster(${i})">
+    <button class="inset p-4 w-full text-left block hover:border-white/30 transition" onclick="focusCluster(${i})">
       <div class="flex justify-between gap-3 font-bold text-sm">
         <span>${esc(c.name)}</span>
         <span class="${c.isVoid ? 'text-rose' : 'text-em'} mono whitespace-nowrap">${c.artisans}</span>

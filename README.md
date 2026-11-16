@@ -1,6 +1,6 @@
 ## 🌌 Immersive 3D Experience
 * **Live WebGL backdrop** (`scene.js`, Three.js): a particle farmland terrain and a voice orb with orbiting trade satellites. The orb reacts to the microphone level, sends a shockwave on a successful match, and docks in the corner as you scroll.
-* **Hand-printed poster look**: paper grain, thick ink outlines, hard offset shadows that shift as cards tilt, handwritten margin notes, a starburst sticker, tape, ink splats on click and a rotated ticker. Truck-art palette of marigold, vermilion and indigo.
+* **Dark green glass theme**: emerald and harvest-gold on a deep field, frosted-glass cards and a live WebGL scene.
 * **3D interface**: pointer-tilt cards, a flip-over holographic **Skill Passport**, perspective view transitions, scroll-reveal sections and animated counters. Honors `prefers-reduced-motion`.
 * **Explainable matching**: confidence meter, the exact keywords that matched (highlighted in the narrative) and the runner-up qualifications.
 * **Intake register**: every evaluated beneficiary is saved in `localStorage` (works offline), with demand-by-trade bars and CSV export.
