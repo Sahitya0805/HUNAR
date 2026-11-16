@@ -481,3 +481,23 @@ kbd { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 6p
 .rule { border-top: 1px solid var(--line); }
 .tbl tr.fresh td { animation: fresh 2.6s ease-out; }
 @keyframes fresh { from { background: rgba(52, 211, 153, .28); } }
+
+/* ---- beige accents: the ticker strip and the "how it works" band ---- */
+.marquee { background: #efe6d2; border-color: rgba(29, 42, 33, .2); backdrop-filter: none; }
+.marquee-track span { color: #3d3b2c; }
+.marquee-track span::after { color: #9a5b00; }
+
+.beige {
+  --ink: #1d2a21; --mut: #5a5846; --dim: #8b8670; --gold: #9a5b00; --em: #0f6b45;
+  --line: rgba(29, 42, 33, .14); --line-strong: rgba(29, 42, 33, .28); --surface: rgba(255, 255, 255, .55); --surface-2: rgba(255, 255, 255, .8);
+  background: linear-gradient(180deg, #f2e9d5, #eadfc7); color: var(--ink);
+  border-block: 1px solid rgba(29, 42, 33, .2); box-shadow: 0 -30px 50px -30px rgba(0, 0, 0, .6), 0 30px 50px -30px rgba(0, 0, 0, .6);
+}
+.beige::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  background-image: radial-gradient(circle, rgba(120, 95, 40, .16) 1px, transparent 1.4px); background-size: 20px 20px; }
+.beige > * { position: relative; }
+.beige .glass { background: #fcf8ee; border-color: rgba(29, 42, 33, .14); backdrop-filter: none; -webkit-backdrop-filter: none;
+  box-shadow: 0 22px 44px -24px rgba(70, 52, 20, .5), inset 0 1px 0 #fff; }
+.beige [data-tilt].tilting { border-color: rgba(15, 107, 69, .55); box-shadow: 0 34px 60px -28px rgba(70, 52, 20, .6), 0 0 0 1px rgba(15, 107, 69, .2); }
+.beige .step-num { -webkit-text-stroke: 1px rgba(29, 42, 33, .3); }
+.beige .step-icon { background: linear-gradient(145deg, rgba(15, 107, 69, .2), rgba(15, 107, 69, .05)); border-color: rgba(15, 107, 69, .4); color: #0f6b45; box-shadow: none; }
