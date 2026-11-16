@@ -94,7 +94,7 @@ body::before {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding: 10px 14px 10px 12px;
   border-radius: 18px;
-  background: rgba(8, 18, 13, 0.62);
+  background: rgba(8, 18, 13, 0.9);
   border: 1px solid var(--line);
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
