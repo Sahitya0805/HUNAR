@@ -501,3 +501,17 @@ kbd { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 6p
 .beige [data-tilt].tilting { border-color: rgba(15, 107, 69, .55); box-shadow: 0 34px 60px -28px rgba(70, 52, 20, .6), 0 0 0 1px rgba(15, 107, 69, .2); }
 .beige .step-num { -webkit-text-stroke: 1px rgba(29, 42, 33, .3); }
 .beige .step-icon { background: linear-gradient(145deg, rgba(15, 107, 69, .2), rgba(15, 107, 69, .05)); border-color: rgba(15, 107, 69, .4); color: #0f6b45; box-shadow: none; }
+
+/* ---- more beige: calculator + footer, with light-surface overrides ---- */
+.beige { --rose: #be123c; --leaf-text: #0f6b45; }
+.beige + .beige { border-top: 0; box-shadow: 0 30px 50px -30px rgba(0, 0, 0, .6); }
+.beige + .beige::after { content: ''; position: absolute; left: 8%; right: 8%; top: 0; height: 1px; background: rgba(29, 42, 33, .16); }
+.beige .inset { background: rgba(29, 42, 33, .045); border-color: rgba(29, 42, 33, .14); }
+.beige .kpi-bar { background: rgba(29, 42, 33, .12); }
+.beige input[type=range] { background: linear-gradient(90deg, var(--em) var(--fill, 50%), rgba(29, 42, 33, .18) var(--fill, 50%)); }
+.beige input[type=range]::-webkit-slider-thumb { background: #fff; border-color: var(--em); box-shadow: 0 0 0 3px rgba(15, 107, 69, .18); }
+.beige .btn-ghost { background: rgba(255, 255, 255, .6); border-color: rgba(29, 42, 33, .2); color: var(--ink); }
+.beige .btn-ghost:hover { background: #fff; border-color: rgba(29, 42, 33, .35); }
+.beige .chip-em { background: rgba(15, 107, 69, .12); border-color: rgba(15, 107, 69, .35); color: #0b5a38; }
+.beige .chip-rose { background: rgba(190, 18, 60, .1); border-color: rgba(190, 18, 60, .3); color: #9f1239; }
+footer.beige { border-bottom: 0; box-shadow: 0 -30px 50px -30px rgba(0, 0, 0, .6); margin-top: 0; }
