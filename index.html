@@ -3,788 +3,645 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HUNAR (हुनर) — Rural Skilling & PM-AJAY Livelihood Portal</title>
-  
-  <!-- Premium Typography: Plus Jakarta Sans, Outfit, Noto Sans Devanagari & JetBrains Mono -->
+  <title>HUNAR (हुनर) — Voice-Driven Rural Skill Certification</title>
+  <meta name="description" content="Speak your work in your own dialect. HUNAR matches it to an NCVET qualification, finds an assessment centre within a one-day commute, and maps unserved clusters for PM-AJAY grants.">
+  <meta name="theme-color" content="#050b08">
+  <link rel="icon" type="image/svg+xml" href="hunar-logo.svg">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;600;800&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            linen: {
-              50: '#FAF8F5',
-              100: '#F5F2EB',
-              200: '#EAE4D8',
-              300: '#DDD5C4',
-              400: '#C7BB9F',
-              500: '#B09F7B',
-              600: '#8A7A58',
-              700: '#675A3F',
-              800: '#463D2B',
-              900: '#231E15',
-            },
-            charcoal: {
-              900: '#161412',
-              800: '#262320',
-              700: '#3D3833',
-              600: '#5C544D',
-              500: '#7F756B',
-              400: '#A89E94',
-            },
-            emerald: {
-              700: '#144F3B',
-              800: '#0F382A',
-              900: '#0A281C',
-            },
-            gold: {
-              50: '#FDFBF0',
-              100: '#FBF5EB',
-              500: '#C59B27',
-              600: '#A8801C',
-              700: '#855628',
-            }
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-            display: ['"Outfit"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-  <!-- html2pdf for Direct Client-side PDF Slip Download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-linen-100 text-charcoal-900 min-h-screen flex flex-col font-sans antialiased selection:bg-emerald-800 selection:text-white">
+<body>
 
-  <!-- TOP HEADER ACCENT -->
-  <div class="h-1.5 w-full bg-gradient-to-r from-emerald-800 via-gold-700 to-linen-500"></div>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <div id="cursor-glow" aria-hidden="true"></div>
+  <div id="scroll-progress" aria-hidden="true"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
 
-  <!-- MAIN NAVIGATION -->
-  <header class="bg-white border-b border-linen-300 sticky top-0 z-40 shadow-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-center justify-between py-3.5 gap-4">
-        
-        <!-- SIMPLE SOBER REVOLVING LOGO & TITLE -->
-        <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchView('kiosk')">
-          <div class="sober-logo-badge relative w-10 h-10 rounded-xl bg-emerald-900 border border-emerald-700/80 flex items-center justify-center shadow-xs overflow-hidden">
-            
-            <!-- SUBTLE SOBER REVOLVING ORBIT RING -->
-            <svg class="sober-orbit-ring absolute inset-0 w-full h-full p-1" viewBox="0 0 100 100" fill="none">
-              <circle cx="50" cy="50" r="44" stroke="#C59B27" stroke-width="1.8" stroke-dasharray="6 8" opacity="0.85"/>
-              <circle cx="50" cy="6" r="3" fill="#FDE68A"/>
-              <circle cx="50" cy="94" r="3" fill="#FDE68A"/>
-            </svg>
-
-            <!-- SOBER AGRICULTURAL SPROUT & LEAF EMBLEM -->
-            <div class="relative z-10 w-5 h-5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" class="w-4.5 h-4.5">
-                <path d="M12 21V10" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
-                <path d="M12 10C12 5.5 16 3 19 3C19 6.5 16.5 10.5 12 10Z" fill="#FDE68A" stroke="#FFFFFF" stroke-width="1.2"/>
-                <path d="M12 14C12 10.5 8.5 8.5 6 8.5C6 11.5 8 14.5 12 14Z" fill="#10B981" stroke="#FFFFFF" stroke-width="1.2"/>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <div class="flex items-center space-x-2">
-              <span class="font-display font-black text-xl tracking-tight text-charcoal-900">HUNAR</span>
-              <span class="text-emerald-800 font-bold text-lg" style="font-family: 'Noto Sans Devanagari', 'Kohinoor Devanagari', 'Mangal', sans-serif; letter-spacing: 0;">(हुनर)</span>
-              <span class="text-[9px] font-bold uppercase tracking-wider bg-gold-100 text-gold-700 px-2 py-0.5 rounded border border-gold-300">PM-AJAY GIA</span>
-            </div>
-            <p class="text-[11px] text-charcoal-600 font-medium -mt-0.5">National Skilling & Direct RPL Verification Portal</p>
-          </div>
-        </div>
-
-        <!-- NAVIGATION TABS -->
-        <div class="flex items-center bg-linen-100 p-1 rounded-xl border border-linen-300 overflow-x-auto">
-          <button id="nav-kiosk-btn" onclick="switchView('kiosk')" class="nav-tab active flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap">
-            <i data-lucide="mic" class="w-4 h-4 text-emerald-800"></i>
-            <span>Voice Intake Desk</span>
-          </button>
-          <button id="nav-samples-btn" onclick="switchView('samples')" class="nav-tab flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-charcoal-600 hover:text-charcoal-900 whitespace-nowrap">
-            <i data-lucide="users" class="w-4 h-4 text-gold-700"></i>
-            <span>Demo Profiles</span>
-          </button>
-          <button id="nav-dashboard-btn" onclick="switchView('dashboard')" class="nav-tab flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-charcoal-600 hover:text-charcoal-900 whitespace-nowrap">
-            <i data-lucide="map" class="w-4 h-4 text-indigo-700"></i>
-            <span>District GIA Map</span>
-          </button>
-          <button id="nav-nqr-btn" onclick="switchView('nqr')" class="nav-tab flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-charcoal-600 hover:text-charcoal-900 whitespace-nowrap">
-            <i data-lucide="book-open" class="w-4 h-4 text-charcoal-700"></i>
-            <span>NQR Master Registry</span>
-          </button>
-          <a href="hunar-report.html" target="_blank" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition whitespace-nowrap">
-            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-            <span>Report (Web)</span>
-          </a>
-          <a href="HUNAR_Executive_Report.docx" download class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 transition whitespace-nowrap ml-1">
-            <i data-lucide="file-down" class="w-3.5 h-3.5 text-amber-700"></i>
-            <span>Download Doc</span>
-          </a>
-        </div>
-
-        <!-- LANGUAGE SELECTOR -->
-        <div class="flex items-center space-x-2 self-end md:self-auto">
-          <label for="dialect-selector" class="text-xs text-charcoal-600 font-medium">Dialect:</label>
-          <div class="relative">
-            <select id="dialect-selector" onchange="updateRecognitionLanguage(this.value)" class="appearance-none bg-linen-50 border border-linen-300 rounded-lg pl-3 pr-8 py-1.5 text-xs font-semibold text-charcoal-900 focus:ring-1 focus:ring-emerald-800 outline-none cursor-pointer">
-              <option value="hi-IN" selected>Hindi / Bundelkhandi / Bhojpuri (हिंदी)</option>
-              <option value="mr-IN">Marathi / Vidarbha (मराठी)</option>
-              <option value="ta-IN">Tamil (தமிழ்)</option>
-              <option value="te-IN">Telugu (తెలుగు)</option>
-              <option value="en-IN">Indian English</option>
-            </select>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-charcoal-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-          </div>
-        </div>
-
+  <!-- ================================================================== NAV -->
+  <header class="topnav">
+    <a href="#top" class="flex items-center gap-3">
+      <div class="logo-badge">
+        <svg class="logo-orbit" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="44" stroke="#f0b93a" stroke-width="2" stroke-dasharray="6 8" opacity="0.9"/>
+          <circle cx="50" cy="6" r="3.5" fill="#fde68a"/>
+        </svg>
+        <svg viewBox="0 0 24 24" fill="none" class="relative w-5 h-5">
+          <path d="M12 21V10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M12 10C12 5.5 16 3 19 3C19 6.5 16.5 10.5 12 10Z" fill="#fde68a" stroke="#fff" stroke-width="1.2"/>
+          <path d="M12 14C12 10.5 8.5 8.5 6 8.5C6 11.5 8 14.5 12 14Z" fill="#34d399" stroke="#fff" stroke-width="1.2"/>
+        </svg>
       </div>
+      <div class="leading-tight">
+        <div class="flex items-center gap-2">
+          <span class="font-display font-extrabold text-lg tracking-tight">HUNAR</span>
+          <span class="deva text-em font-bold">हुनर</span>
+        </div>
+        <div class="text-[10.5px] text-mut font-semibold tracking-wide">PM-AJAY · Direct RPL Portal</div>
+      </div>
+    </a>
+
+    <nav class="navlinks flex items-center gap-1">
+      <a class="navlink" href="#impact">Impact</a>
+      <a class="navlink" href="#how">How it works</a>
+      <a class="navlink" href="#calculator">Wage calculator</a>
+      <a class="navlink" href="hunar-report.html" target="_blank" rel="noopener">Report</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <button class="btn btn-ghost btn-sm hidden sm:inline-flex" onclick="openCmdk()" title="Command palette">
+        <i data-lucide="search" class="w-4 h-4"></i><kbd>⌘K</kbd>
+      </button>
+      <a href="#console" class="btn btn-primary btn-sm"><i data-lucide="mic" class="w-4 h-4"></i>Open console</a>
     </div>
   </header>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-
-    <!-- ========================================================================= -->
-    <!-- VIEW 1: VOICE INTAKE & ASSESSMENT DESK -->
-    <!-- ========================================================================= -->
-    <section id="view-kiosk" class="space-y-6 relative">
-
-      <!-- FLOATING EVALUATION TOAST NOTIFICATION -->
-      <div id="eval-toast" class="hidden fixed top-20 right-6 z-50 max-w-md bg-emerald-900 text-white px-4 py-3 rounded-xl shadow-xl border border-emerald-700 flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center shrink-0">
-          <i data-lucide="check" class="w-5 h-5 text-emerald-200"></i>
+  <!-- ================================================================== HERO -->
+  <section id="top" class="hero">
+    <div class="max-w-7xl w-full mx-auto px-5 sm:px-8">
+      <div class="max-w-2xl">
+        <div class="eyebrow fade-up" style="--d:.05s">Smart India Hackathon 2026 · PS 26097</div>
+        <h1 class="hero-title mt-5" aria-label="HUNAR">
+          <span style="--i:0">H</span><span style="--i:1">U</span><span style="--i:2">N</span><span style="--i:3">A</span><span style="--i:4">R</span>
+        </h1>
+        <div class="hero-deva deva">हुनर</div>
+        <p class="mt-5 text-lg sm:text-xl text-mut leading-relaxed max-w-xl fade-up" style="--d:.9s">
+          Speak your work in your own dialect. Walk out with a
+          <b class="text-ink">national skill certificate in 2 days</b>, not 6 months, from a centre you can reach and return from the same day.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3 fade-up" style="--d:1.05s">
+          <a href="#console" class="btn btn-primary"><i data-lucide="mic" class="w-4 h-4"></i>Start voice intake</a>
+          <button class="btn btn-ghost" onclick="runGuidedDemo()"><i data-lucide="play" class="w-4 h-4"></i>Watch a 10-second demo</button>
         </div>
-        <div class="text-xs">
-          <div class="font-bold text-white text-[13px]" id="eval-toast-title">Qualification Evaluated!</div>
-          <div class="text-linen-200 text-[11px]" id="eval-toast-desc">Matched NSQF standard successfully verified.</div>
+
+        <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 fade-up" style="--d:1.2s">
+          <div><div class="stat-num text-em"><span data-count="150">0</span>M+</div><div class="text-xs text-mut mt-2 font-semibold">informal artisans</div></div>
+          <div><div class="stat-num text-rose"><span data-count="92">0</span>%</div><div class="text-xs text-mut mt-2 font-semibold">hold no certificate</div></div>
+          <div><div class="stat-num text-gold"><span data-count="2">0</span> days</div><div class="text-xs text-mut mt-2 font-semibold">to certification</div></div>
+          <div><div class="stat-num">₹<span data-count="0">0</span></div><div class="text-xs text-mut mt-2 font-semibold">wages forfeited</div></div>
         </div>
-        <button onclick="dismissEvalToast()" class="text-linen-300 hover:text-white p-1 ml-auto">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
+      </div>
+    </div>
+    <a href="#impact" class="scroll-cue"><i></i>Scroll</a>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marquee-track"></div>
+  </div>
+
+  <!-- ================================================================== IMPACT -->
+  <section id="impact" class="section">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="reveal max-w-3xl">
+        <div class="eyebrow">The rural certification paradox</div>
+        <h2 class="section-title mt-4">A 6-month course costs a daily-wage earner <span class="grad-text">₹54,000 they do not have.</span></h2>
+        <p class="mt-5 text-mut text-lg leading-relaxed">Classroom schemes ask experienced artisans to stop earning in order to prove what they already know. HUNAR certifies the skill they have, where they live.</p>
+      </div>
+      <div id="kpi-grid" class="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+  </section>
+
+  <!-- ================================================================== HOW -->
+  <section id="how" class="section" style="padding-top:40px">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="reveal max-w-3xl">
+        <div class="eyebrow">How it works</div>
+        <h2 class="section-title mt-4">Four steps. <span class="grad-text">No forms, no typing.</span></h2>
+      </div>
+      <div class="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="glass p-6 reveal" data-tilt style="--d:0s">
+          <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="mic"></i></div><div class="step-num">01</div></div>
+          <h3 class="font-display font-bold text-xl mt-6 pop">Speak</h3>
+          <p class="text-mut text-sm mt-2 leading-relaxed">The artisan describes their work at the village CSC kiosk in Hindi, Bundelkhandi, Marathi, Tamil or Telugu.</p>
+        </div>
+        <div class="glass p-6 reveal" data-tilt style="--d:.1s">
+          <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="scan-search"></i></div><div class="step-num">02</div></div>
+          <h3 class="font-display font-bold text-xl mt-6 pop">Match</h3>
+          <p class="text-mut text-sm mt-2 leading-relaxed">A deterministic engine scores the narrative against the qualification register and shows exactly which words matched.</p>
+        </div>
+        <div class="glass p-6 reveal" data-tilt style="--d:.2s">
+          <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="route"></i></div><div class="step-num">03</div></div>
+          <h3 class="font-display font-bold text-xl mt-6 pop">Route</h3>
+          <p class="text-mut text-sm mt-2 leading-relaxed">Only centres inside a one-day commute are recommended. Anything further is flagged as a reachability void.</p>
+        </div>
+        <div class="glass p-6 reveal" data-tilt style="--d:.3s">
+          <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="award"></i></div><div class="step-num">04</div></div>
+          <h3 class="font-display font-bold text-xl mt-6 pop">Certify</h3>
+          <p class="text-mut text-sm mt-2 leading-relaxed">A printed action slip, a 12–16 hour practical assessment, and voids aggregated into a fundable mobile-van proposal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== CALCULATOR -->
+  <section id="calculator" class="section" style="padding-top:40px">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="glass p-6 sm:p-10 reveal">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div class="eyebrow">Wage-loss calculator</div>
+            <h2 class="section-title mt-4" style="font-size:clamp(28px,3.4vw,44px)">What does certification really cost a worker?</h2>
+            <div class="mt-8 space-y-7">
+              <div>
+                <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Daily wage</span><span class="mono text-em" id="calc-wage-val">₹500</span></div>
+                <input type="range" id="calc-wage" min="300" max="900" step="25" value="500" oninput="updateCalculator()">
+              </div>
+              <div>
+                <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Classroom course length</span><span class="mono text-em" id="calc-months-val">3 months</span></div>
+                <input type="range" id="calc-months" min="3" max="6" step="1" value="3" oninput="updateCalculator()">
+              </div>
+              <div>
+                <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Current monthly income</span><span class="mono text-em" id="calc-income-val">₹9,500</span></div>
+                <input type="range" id="calc-income" min="6000" max="16000" step="500" value="9500" oninput="updateCalculator()">
+              </div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="inset p-5">
+              <div class="flex items-center justify-between"><span class="text-sm font-bold text-mut">Traditional classroom route</span><span class="chip chip-rose" id="calc-trad-days">90 days</span></div>
+              <div class="stat-num text-rose mt-3" id="calc-trad-loss">−₹45,000</div>
+              <div class="text-xs text-mut mt-1">wages forfeited while attending</div>
+              <div class="kpi-bar go mt-4"><i class="bar-before" id="calc-trad-bar" style="--w:100%"></i></div>
+            </div>
+            <div class="inset p-5" style="border-color:rgba(52,211,153,.4)">
+              <div class="flex items-center justify-between"><span class="text-sm font-bold text-mut">HUNAR direct RPL</span><span class="chip chip-em">2 days</span></div>
+              <div class="stat-num text-em mt-3" id="calc-hunar-loss">+₹500</div>
+              <div class="text-xs text-mut mt-1" id="calc-hunar-note">wages protected, plus ₹500 DBT allowance</div>
+              <div class="kpi-bar go mt-4"><i class="bar-after" id="calc-hunar-bar" style="--w:3%"></i></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="inset p-4"><div class="text-xs text-mut font-bold">Income after certification</div><div class="font-display font-extrabold text-2xl mt-1 text-gold" id="calc-new-income">₹14,200</div><div class="text-[11px] text-dim mt-1">+49.5% average uplift</div></div>
+              <div class="inset p-4"><div class="text-xs text-mut font-bold">Extra earned in year one</div><div class="font-display font-extrabold text-2xl mt-1 text-gold" id="calc-year-gain">₹56,400</div><div class="text-[11px] text-dim mt-1">vs. staying uncertified</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== CONSOLE -->
+  <section id="console" class="section" style="padding-top:40px">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 space-y-6">
+
+      <div class="reveal flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div class="eyebrow">Live console</div>
+          <h2 class="section-title mt-4">Try the <span class="grad-text">kiosk.</span></h2>
+        </div>
+        <div class="glass tabs">
+          <button id="nav-kiosk-btn" onclick="switchView('kiosk')" class="nav-tab active"><i data-lucide="mic" class="w-4 h-4"></i>Voice desk</button>
+          <button id="nav-samples-btn" onclick="switchView('samples')" class="nav-tab"><i data-lucide="users" class="w-4 h-4"></i>Demo profiles</button>
+          <button id="nav-dashboard-btn" onclick="switchView('dashboard')" class="nav-tab"><i data-lucide="map" class="w-4 h-4"></i>District map</button>
+          <button id="nav-nqr-btn" onclick="switchView('nqr')" class="nav-tab"><i data-lucide="book-open" class="w-4 h-4"></i>Registry</button>
+          <button id="nav-history-btn" onclick="switchView('history')" class="nav-tab"><i data-lucide="clipboard-list" class="w-4 h-4"></i>Intake register <span id="hist-count" class="mono text-[11px] opacity-80"></span></button>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- TOAST -->
+      <div id="eval-toast" class="glass glass-solid p-4 flex items-center gap-3">
+        <div class="step-icon" style="width:38px;height:38px;border-radius:12px"><i data-lucide="check" class="w-5 h-5"></i></div>
+        <div class="text-sm">
+          <div class="font-bold" id="eval-toast-title">Qualification evaluated</div>
+          <div class="text-mut text-xs mt-0.5" id="eval-toast-desc"></div>
+        </div>
+        <button onclick="dismissEvalToast()" class="text-mut hover:text-white p-1 ml-auto" aria-label="Dismiss"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
 
-        <!-- LEFT (7 COLS): VOICE INTAKE CONSOLE -->
-        <div class="lg:col-span-7 space-y-5">
-          <div class="bg-white rounded-2xl border border-linen-300 shadow-sm p-6 space-y-5">
-            
-            <div class="flex items-center justify-between border-b border-linen-200 pb-3.5">
+      <!-- ============================ VIEW 1: VOICE DESK -->
+      <div id="view-kiosk">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+          <div class="lg:col-span-7 glass p-6 sm:p-7 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h3 class="font-display font-bold text-charcoal-900 text-base">Beneficiary Intake Desk</h3>
-                <p class="text-xs text-charcoal-500">Record rural artisan work narrative in local dialect or type directly</p>
+                <h3 class="font-display font-bold text-xl">Beneficiary intake</h3>
+                <p class="text-sm text-mut">Record the work narrative in the local dialect, or type it.</p>
               </div>
-              <span id="mic-status-badge" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-linen-100 text-charcoal-700 border border-linen-300 flex items-center space-x-1.5">
-                <span id="mic-status-dot" class="w-2 h-2 rounded-full bg-emerald-800"></span>
-                <span id="mic-status-text">Microphone Ready</span>
-              </span>
+              <span class="chip"><span id="mic-status-dot" class="dot"></span><span id="mic-status-text">Microphone ready</span></span>
             </div>
 
-            <!-- BENEFICIARY METADATA INPUTS (CLEAN EMPTY PLACEHOLDERS) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
-              <div class="space-y-1">
-                <label class="block text-charcoal-700 font-semibold">Beneficiary Name:</label>
-                <input type="text" id="input-beneficiary-name" oninput="syncBeneficiaryData()" placeholder="e.g. Chhedilal Verma" class="w-full px-3 py-2 rounded-lg border border-linen-300 font-semibold text-charcoal-900 bg-linen-50 focus:bg-white focus:ring-1 focus:ring-emerald-800 outline-none">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="label" for="input-beneficiary-name">Beneficiary name</label>
+                <input type="text" id="input-beneficiary-name" oninput="syncBeneficiaryData()" placeholder="e.g. Chhedilal Verma" class="field">
               </div>
-              <div class="space-y-1">
-                <label class="block text-charcoal-700 font-semibold">Village / District:</label>
-                <input type="text" id="input-beneficiary-loc" oninput="syncBeneficiaryData()" placeholder="e.g. Tindwari Village, Banda (UP)" class="w-full px-3 py-2 rounded-lg border border-linen-300 font-semibold text-charcoal-900 bg-linen-50 focus:bg-white focus:ring-1 focus:ring-emerald-800 outline-none">
+              <div>
+                <label class="label" for="input-beneficiary-loc">Village / district</label>
+                <input type="text" id="input-beneficiary-loc" oninput="syncBeneficiaryData()" placeholder="e.g. Tindwari, Banda (UP)" class="field">
+              </div>
+              <div>
+                <label class="label" for="dialect-selector">Dialect</label>
+                <select id="dialect-selector" onchange="updateRecognitionLanguage(this.value)" class="field">
+                  <option value="hi-IN" selected>Hindi / Bundelkhandi (हिंदी)</option>
+                  <option value="mr-IN">Marathi (मराठी)</option>
+                  <option value="ta-IN">Tamil (தமிழ்)</option>
+                  <option value="te-IN">Telugu (తెలుగు)</option>
+                  <option value="en-IN">Indian English</option>
+                </select>
               </div>
             </div>
 
-            <!-- REAL AUDIO SPECTRUM CANVAS & RECORDER BUTTON -->
-            <div class="p-4 rounded-xl audio-visualizer-box text-white space-y-3">
-              <div class="flex items-center justify-between text-[11px] text-linen-400">
-                <span class="flex items-center gap-1.5">
-                  <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i>
-                  <span>Live Microphone Input Level:</span>
-                </span>
-                <span id="audio-rate-text" class="font-mono text-[10px] text-linen-500">44.1 kHz • Analyser Ready</span>
+            <div id="viz-box" class="viz-box space-y-4">
+              <div class="flex items-center justify-between text-xs text-mut">
+                <span class="flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4 text-em"></i>Live microphone spectrum</span>
+                <span id="audio-rate-text" class="mono">analyser idle</span>
               </div>
-              
-              <canvas id="waveform-canvas" class="w-full h-14 rounded-lg bg-black/60"></canvas>
-
-              <div class="flex items-center justify-between pt-1">
-                <button id="record-btn" onclick="toggleVoiceRecording()" class="px-4 py-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white font-display font-bold text-xs flex items-center space-x-2 transition shadow-xs">
-                  <i data-lucide="mic" id="mic-icon" class="w-4 h-4"></i>
-                  <span id="mic-text">Start Microphone</span>
+              <canvas id="waveform-canvas"></canvas>
+              <div class="flex flex-wrap items-center gap-4">
+                <button id="record-btn" onclick="toggleVoiceRecording()" class="btn btn-primary mic-btn">
+                  <i data-lucide="mic" class="w-4 h-4"></i><span id="mic-text">Start microphone</span>
                 </button>
-                <span id="listening-hint" class="text-[11px] text-linen-300">Click to record or speak into your microphone</span>
+                <span id="listening-hint" class="text-xs text-mut flex-1 min-w-[180px]">Press and speak. The 3D orb listens with you.</span>
               </div>
             </div>
 
-            <!-- SPOKEN TRANSCRIPT & MANUAL EDIT AREA -->
-            <div class="space-y-2">
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-bold text-charcoal-800 flex items-center gap-1">
-                  <i data-lucide="message-square" class="w-3.5 h-3.5 text-emerald-800"></i>
-                  <span>Recognized Spoken Text / Description:</span>
-                </span>
-                <span id="match-confidence-badge" class="font-mono text-[10px] px-2 py-0.5 rounded bg-linen-100 text-charcoal-700 border border-linen-200">
-                  Status: <b id="conf-val" class="text-charcoal-600 font-bold">Awaiting Input</b>
-                </span>
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <label class="label !mb-0" for="transcript-input">Recognised narrative</label>
+                <span class="chip mono">match: <b id="conf-val" class="text-mut">awaiting input</b></span>
               </div>
               <div class="relative">
-                <textarea id="transcript-input" oninput="executeDynamicAnalysis()" rows="3" class="w-full text-xs sm:text-sm p-3 rounded-xl border border-linen-300 focus:ring-1 focus:ring-emerald-800 outline-none text-charcoal-900 bg-linen-50 leading-relaxed font-sans" placeholder="Click 'Start Microphone' to record native dialect speech, or type artisan experience narrative here..."></textarea>
-                <button onclick="speakCurrentText()" title="Listen to text" class="absolute right-2.5 bottom-2.5 p-1.5 rounded-lg bg-white border border-linen-300 text-charcoal-600 hover:text-emerald-800 shadow-xs">
-                  <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-                </button>
+                <textarea id="transcript-input" oninput="executeDynamicAnalysis()" rows="3" class="field deva !font-medium leading-relaxed" placeholder="Start the microphone, or type the artisan's experience here…"></textarea>
+                <button onclick="speakCurrentText()" title="Read the text aloud" class="absolute right-3 bottom-3 btn btn-ghost btn-sm !p-2"><i data-lucide="volume-2" class="w-4 h-4"></i></button>
               </div>
-              <!-- QUICK FILL PROMPTS -->
-              <div class="flex flex-wrap items-center gap-1.5 pt-1 text-[11px] text-charcoal-500">
-                <span class="font-medium">Quick Suggestions:</span>
-                <button onclick="selectProfileAndSwitch('agro_mill')" class="px-2 py-0.5 rounded bg-linen-100 hover:bg-linen-200 text-charcoal-700 border border-linen-300 transition">🌾 Pulse & Spice Mill</button>
-                <button onclick="selectProfileAndSwitch('solar_pump')" class="px-2 py-0.5 rounded bg-linen-100 hover:bg-linen-200 text-charcoal-700 border border-linen-300 transition">⚡ Solar Agri-Pump</button>
-                <button onclick="selectProfileAndSwitch('rural_mason')" class="px-2 py-0.5 rounded bg-linen-100 hover:bg-linen-200 text-charcoal-700 border border-linen-300 transition">🧱 Rural Mason</button>
-              </div>
-            </div>
-
-            <!-- DYNAMIC EXPERIENCE & COMMUTE SETTINGS -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-linen-200 text-xs">
-              <div class="space-y-1">
-                <label class="block text-charcoal-700 font-semibold">Extracted Experience:</label>
-                <input type="text" id="input-extracted-exp" oninput="syncBeneficiaryData()" placeholder="Auto-detected from speech or enter years..." class="w-full px-3 py-2 rounded-lg border border-linen-300 font-semibold text-charcoal-900 bg-linen-50">
-              </div>
-              <div class="space-y-1">
-                <label class="block text-charcoal-700 font-semibold">Max 1-Day Commute:</label>
-                <div class="relative">
-                  <select id="user-max-distance" onchange="executeDynamicAnalysis()" class="appearance-none w-full px-3 pr-8 py-2 rounded-lg border border-linen-300 font-semibold text-charcoal-900 bg-white cursor-pointer outline-none">
-                    <option value="15">15 km (Cycle / Rural E-Rickshaw)</option>
-                    <option value="25" selected>25 km (1-Day Return Bus)</option>
-                    <option value="45">45 km (District Center)</option>
-                  </select>
-                  <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-charcoal-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                </div>
+              <div id="transcript-highlight" class="hidden mt-3 text-sm deva leading-relaxed text-mut inset p-3"></div>
+              <div class="flex flex-wrap items-center gap-2 mt-3">
+                <span class="text-xs text-dim font-semibold">Try:</span>
+                <button onclick="selectProfileAndSwitch('agro_mill')" class="chip">🌾 Pulse &amp; spice mill</button>
+                <button onclick="selectProfileAndSwitch('solar_pump')" class="chip">⚡ Solar agri-pump</button>
+                <button onclick="selectProfileAndSwitch('rural_mason')" class="chip">🧱 Rural mason</button>
+                <button onclick="selectProfileAndSwitch('leather')" class="chip">👞 Leather (void case)</button>
+                <button onclick="clearDesk()" class="chip">Clear</button>
               </div>
             </div>
 
-            <!-- EVALUATE BUTTON -->
-            <button id="evaluate-match-btn" onclick="handleEvaluateButtonClick()" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 active:scale-[0.99] text-white font-display font-bold text-xs transition-all flex items-center justify-center space-x-2 shadow-sm cursor-pointer">
-              <i data-lucide="check-circle" id="eval-btn-icon" class="w-4 h-4"></i>
-              <span id="eval-btn-text">Evaluate Qualification Match</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="label" for="input-extracted-exp">Extracted experience</label>
+                <input type="text" id="input-extracted-exp" oninput="syncBeneficiaryData()" placeholder="Detected from speech, or enter years" class="field">
+              </div>
+              <div>
+                <label class="label" for="user-max-distance">Maximum one-day commute</label>
+                <select id="user-max-distance" onchange="executeDynamicAnalysis()" class="field">
+                  <option value="15">15 km (cycle / e-rickshaw)</option>
+                  <option value="25" selected>25 km (one-day return bus)</option>
+                  <option value="45">45 km (district centre)</option>
+                </select>
+              </div>
+            </div>
+
+            <button id="evaluate-match-btn" onclick="handleEvaluateButtonClick()" class="btn btn-primary btn-block !py-4 !text-base">
+              <i data-lucide="check-circle" class="w-5 h-5"></i><span>Evaluate qualification match</span>
             </button>
-
           </div>
-        </div>
 
-        <!-- RIGHT (5 COLS): DETERMINISTIC NQR QUALIFICATION & COMMUTE CHECK -->
-        <div class="lg:col-span-5 space-y-5">
-          <div id="rpl-main-card" class="bg-white rounded-2xl border border-linen-300 shadow-sm p-6 space-y-5 transition-all duration-300">
-            
-            <div class="flex items-center justify-between border-b border-linen-200 pb-3.5">
-              <div>
-                <h3 class="font-display font-bold text-charcoal-900 text-base">National Qualification Match</h3>
-                <p class="text-xs text-charcoal-500">Official NQR standard and assessment pathway</p>
-              </div>
-              <span id="rpl-nsqf" class="hidden bg-emerald-800 text-white font-mono font-bold text-xs px-2.5 py-1 rounded-md">Level 4</span>
-            </div>
-
-            <!-- STANDBY EMPTY STATE (SHOWN WHEN NO INPUT ENTERED YET) -->
-            <div id="rpl-empty-state" class="py-10 px-4 text-center space-y-3 bg-linen-50 border border-dashed border-linen-300 rounded-xl">
-              <div class="w-10 h-10 rounded-full bg-linen-200 text-charcoal-500 flex items-center justify-center mx-auto">
-                <i data-lucide="mic" class="w-5 h-5 text-emerald-800"></i>
-              </div>
-              <h4 class="font-display font-bold text-charcoal-900 text-sm">Awaiting Beneficiary Intake</h4>
-              <p class="text-xs text-charcoal-500 max-w-xs mx-auto leading-relaxed">
-                Click <b>"Start Microphone"</b> or type the rural artisan's experience on the left. The engine will dynamically match the official NSQF qualification and verify commute proximity.
-              </p>
-            </div>
-
-            <!-- UNMATCHED / ANALYZING STATE (WHEN TEXT ENTERED DOES NOT MATCH A KNOWN TRADE YET) -->
-            <div id="rpl-unmatched-state" class="hidden py-6 px-4 text-center space-y-3 bg-amber-50/70 border border-amber-300 rounded-xl">
-              <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
-                <i data-lucide="help-circle" class="w-5 h-5 text-amber-800"></i>
-              </div>
-              <div>
-                <h4 class="font-display font-bold text-charcoal-900 text-sm">No Vocational Trade Matched Yet</h4>
-                <p class="text-xs text-charcoal-600 mt-1 max-w-xs mx-auto leading-relaxed" id="unmatched-reason-text">
-                  The entered text "<span id="unmatched-sample-text" class="font-bold text-amber-900"></span>" does not contain recognized trade keywords.
-                </p>
-              </div>
-              <div class="bg-white p-3 rounded-lg border border-amber-200 text-left text-[11px] text-charcoal-700 space-y-1.5 max-w-xs mx-auto">
-                <div class="font-bold text-amber-900 text-[10.5px]">💡 Speak or type your trade, for example:</div>
-                <ul class="space-y-1 text-charcoal-600 text-[10px]">
-                  <li class="flex items-center gap-1.5 cursor-pointer hover:text-emerald-800" onclick="selectProfileAndSwitch('solar_pump')">⚡ <b>Solar Pump / Tubewell Repair</b></li>
-                  <li class="flex items-center gap-1.5 cursor-pointer hover:text-emerald-800" onclick="selectProfileAndSwitch('agro_mill')">🌾 <b>Pulse, Grain & Spice Mill</b></li>
-                  <li class="flex items-center gap-1.5 cursor-pointer hover:text-emerald-800" onclick="selectProfileAndSwitch('rural_mason')">🧱 <b>Masonry / Tank Construction</b></li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- MATCHED QUALIFICATION CARD (ACTIVE WHEN POPULATED) -->
-            <div id="rpl-result-card" class="hidden space-y-4">
-              <div class="bg-linen-50 border border-linen-300 rounded-xl p-4 space-y-3.5 text-xs">
+          <div class="lg:col-span-5">
+            <div id="rpl-main-card" class="glass p-6 sm:p-7 space-y-5">
+              <div class="flex items-center justify-between">
                 <div>
-                  <span class="text-gold-700 font-bold text-[10px] uppercase tracking-wider" id="rpl-category">Agro-FoodTech (ODOP)</span>
-                  <h4 id="rpl-title" class="text-sm sm:text-base font-display font-bold text-charcoal-900 mt-1 leading-snug">
-                    Pulse, Grain & Spice Processing Operator
-                  </h4>
-                  <p id="rpl-sector" class="text-[11px] text-charcoal-500 mt-0.5">Food Industry Capacity & Skill Initiative (FICSI)</p>
+                  <h3 class="font-display font-bold text-xl">Qualification match</h3>
+                  <p class="text-sm text-mut">Register standard and assessment pathway</p>
                 </div>
-
-                <div class="grid grid-cols-2 gap-2.5 pt-1">
-                  <div class="bg-white p-2.5 rounded-lg border border-linen-200">
-                    <span class="text-charcoal-500 block text-[10px] uppercase font-medium">QP Code</span>
-                    <span id="rpl-code" class="font-mono font-bold text-charcoal-900">FIC/Q0104</span>
-                  </div>
-                  <div class="bg-white p-2.5 rounded-lg border border-linen-200">
-                    <span class="text-charcoal-500 block text-[10px] uppercase font-medium">Evaluation Duration</span>
-                    <span id="rpl-duration" class="font-bold text-charcoal-900">12 Hours (2-Day)</span>
-                  </div>
-                </div>
-
-                <div class="space-y-1.5 pt-1 text-charcoal-700">
-                  <div class="flex items-start">
-                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-800 mr-2 shrink-0 mt-0.5"></i>
-                    <span>Nearest Center: <b id="rpl-center" class="text-charcoal-900">KVK Agro Science Center, Banda (11.2 km)</b></span>
-                  </div>
-                  <div class="flex items-center">
-                    <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-800 mr-2 shrink-0"></i>
-                    <span>PM-AJAY GIA Grant: <b class="text-emerald-800">100% Free + ₹500 DBT</b></span>
-                  </div>
-                </div>
+                <span id="rpl-nsqf" class="hidden chip chip-gold mono">Level 4</span>
               </div>
 
-              <!-- COMMUTE DISTANCE STATUS -->
-              <div id="reach-box" class="border border-linen-300 rounded-xl p-3.5 text-xs space-y-1.5 bg-linen-50">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-charcoal-800">1-Day Commute Status:</span>
-                  <span id="reach-badge" class="font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px]">100% REACHABLE</span>
-                </div>
-                <p id="reach-desc" class="text-[11px] text-charcoal-600 leading-relaxed">
-                  Center is <b>11.2 km</b> away. Attainable and returnable within the same day without wage loss.
+              <div id="rpl-empty-state" class="inset py-12 px-5 text-center" style="border-style:dashed">
+                <div class="step-icon mx-auto"><i data-lucide="mic"></i></div>
+                <h4 class="font-display font-bold text-lg mt-4">Awaiting intake</h4>
+                <p class="text-sm text-mut mt-2 max-w-xs mx-auto leading-relaxed">Speak or type the artisan's experience. The match, the centre and the commute check appear here.</p>
+              </div>
+
+              <div id="rpl-unmatched-state" class="hidden inset py-7 px-5 text-center" style="border-color:rgba(240,185,58,.45)">
+                <div class="step-icon mx-auto" style="color:var(--gold);border-color:rgba(240,185,58,.45);background:rgba(240,185,58,.12);box-shadow:none"><i data-lucide="help-circle"></i></div>
+                <h4 class="font-display font-bold text-lg mt-4">No trade matched yet</h4>
+                <p class="text-sm text-mut mt-2 max-w-xs mx-auto leading-relaxed">
+                  "<span id="unmatched-sample-text" class="text-gold font-bold"></span>" has no recognised trade words. Mention the work itself, for example:
                 </p>
+                <div class="flex flex-wrap justify-center gap-2 mt-4">
+                  <button class="chip" onclick="selectProfileAndSwitch('solar_pump')">⚡ Solar pump repair</button>
+                  <button class="chip" onclick="selectProfileAndSwitch('agro_mill')">🌾 Grain &amp; spice mill</button>
+                  <button class="chip" onclick="selectProfileAndSwitch('rural_mason')">🧱 Masonry</button>
+                </div>
               </div>
 
-              <!-- ACTION BUTTONS -->
-              <div class="space-y-2 pt-1">
-                <button onclick="openPrintModal()" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-display font-bold text-xs flex items-center justify-center space-x-2 transition shadow-xs">
-                  <i data-lucide="file-text" class="w-4 h-4"></i>
-                  <span>Download Official Action Slip (PDF)</span>
-                </button>
+              <div id="rpl-result-card" class="hidden space-y-5">
+
+                <!-- SKILL PASSPORT -->
+                <div id="passport" class="passport" onclick="this.classList.toggle('flipped')" title="Click to flip">
+                  <div class="passport-inner">
+                    <div class="passport-face">
+                      <div class="flex items-start justify-between gap-3">
+                        <div>
+                          <div class="text-[10px] font-bold tracking-[.2em] uppercase text-gold">Skill passport · PM-AJAY GIA</div>
+                          <div id="rpl-category" class="text-xs text-mut font-semibold mt-1"></div>
+                        </div>
+                        <div class="level-badge"><div class="text-center"><div class="text-[8px] tracking-widest">NSQF</div><div id="pp-level" class="text-xl">4</div></div></div>
+                      </div>
+                      <h4 id="rpl-title" class="font-display font-extrabold text-2xl leading-tight mt-4"></h4>
+                      <p id="rpl-sector" class="text-xs text-mut mt-1"></p>
+                      <div class="grid grid-cols-2 gap-3 mt-5">
+                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Holder</div><div id="pp-name" class="font-bold text-sm mt-0.5"></div></div>
+                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">QP code</div><div id="rpl-code" class="mono font-bold text-sm mt-0.5 text-em"></div></div>
+                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Assessment</div><div id="rpl-duration" class="font-bold text-sm mt-0.5"></div></div>
+                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Token</div><div id="pp-token" class="mono font-bold text-xs mt-1"></div></div>
+                      </div>
+                      <div class="text-[10px] text-dim mt-4 flex items-center gap-1.5"><i data-lucide="rotate-3d" class="w-3.5 h-3.5"></i>Click to flip for the assessed competencies</div>
+                    </div>
+                    <div class="passport-face passport-back">
+                      <div class="text-[10px] font-bold tracking-[.2em] uppercase text-gold">National Occupational Standards</div>
+                      <ul id="pp-nos" class="mt-3 space-y-2 text-xs leading-relaxed"></ul>
+                      <div class="mt-4 pt-3 border-t border-white/10 text-xs"><span class="text-dim">Entitlement: </span><b id="pp-stipend" class="text-gold"></b></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CONFIDENCE + EXPLAINABILITY -->
+                <div class="inset p-4 space-y-3">
+                  <div class="flex items-center justify-between text-sm"><span class="font-bold">Match confidence</span><span id="conf-pct" class="mono font-bold text-em">0%</span></div>
+                  <div class="meter"><i id="conf-bar"></i></div>
+                  <div>
+                    <div class="text-[11px] text-dim font-bold uppercase tracking-widest mb-2">Matched on</div>
+                    <div id="kw-chips" class="flex flex-wrap gap-1.5"></div>
+                  </div>
+                  <div id="alt-wrap">
+                    <div class="text-[11px] text-dim font-bold uppercase tracking-widest mb-2">Other candidates</div>
+                    <div id="alt-matches" class="space-y-2"></div>
+                  </div>
+                </div>
+
+                <!-- COMMUTE -->
+                <div id="reach-box" class="inset p-4 space-y-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="font-bold text-sm">One-day commute</span>
+                    <span id="reach-badge" class="chip chip-em">Reachable</span>
+                  </div>
+                  <div class="meter" id="reach-meter"><i id="reach-bar"></i><span class="tick" id="reach-tick"></span></div>
+                  <div class="flex items-start gap-2 text-sm"><i data-lucide="map-pin" class="w-4 h-4 text-em mt-0.5 flex-none"></i><span><b id="rpl-center"></b></span></div>
+                  <p id="reach-desc" class="text-xs text-mut leading-relaxed"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <button onclick="openPrintModal()" class="btn btn-gold"><i data-lucide="file-down" class="w-4 h-4"></i>Action slip</button>
+                  <button onclick="speakResult()" class="btn btn-ghost"><i data-lucide="volume-2" class="w-4 h-4"></i>सुनें (Hindi)</button>
+                </div>
               </div>
             </div>
-
           </div>
-        </div>
 
-      </div>
-
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- VIEW 2: DEMONSTRATION RECORDS -->
-    <!-- ========================================================================= -->
-    <section id="view-samples" class="hidden space-y-6">
-      
-      <div class="bg-white p-6 rounded-2xl border border-linen-300 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 class="text-xl font-display font-bold text-charcoal-900">Verified Rural Beneficiary Profiles</h2>
-          <p class="text-xs text-charcoal-600">Sample field intake records from rural Bundelkhand to demonstrate automatic qualification matching.</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        
-        <!-- CARD 1 -->
-        <div class="bg-white p-5 rounded-2xl border border-linen-300 shadow-sm space-y-4 flex flex-col justify-between hover:border-emerald-800 transition">
-          <div class="space-y-2.5">
-            <div class="flex justify-between items-start">
-              <span class="bg-linen-100 text-charcoal-700 text-[10px] font-bold px-2 py-0.5 rounded border border-linen-300">Agro-FoodTech (ODOP)</span>
-              <span class="text-xs font-mono font-bold text-linen-700">7 Yrs Exp</span>
-            </div>
-            <h3 class="font-display font-bold text-lg text-charcoal-900">Chhedilal Verma</h3>
-            <p class="text-xs text-charcoal-500 flex items-center gap-1">
-              <i data-lucide="map-pin" class="w-3 h-3 text-charcoal-400"></i> Tindwari Village, Banda (UP)
-            </p>
-            <div class="p-3 bg-linen-50 rounded-xl border border-linen-200 text-xs italic text-charcoal-700 leading-relaxed">
-              "हम 7 साल से दाल मिल में काम करते हैं, चना और अरहर का ग्रेडिंग और पिसाई करते हैं..."
-            </div>
-          </div>
-          <button onclick="selectProfileAndSwitch('agro_mill')" class="w-full py-2.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-display font-bold text-xs transition flex items-center justify-center space-x-1.5">
-            <i data-lucide="play" class="w-3.5 h-3.5"></i>
-            <span>Load Record into Desk</span>
-          </button>
+      <!-- ============================ VIEW 2: DEMO PROFILES -->
+      <div id="view-samples" class="hidden space-y-6">
+        <div class="glass p-6">
+          <h3 class="font-display font-bold text-xl">Sample field intake records</h3>
+          <p class="text-sm text-mut">Illustrative beneficiaries from rural Bundelkhand. Load one to see the engine match it.</p>
         </div>
-
-        <!-- CARD 2 -->
-        <div class="bg-white p-5 rounded-2xl border border-linen-300 shadow-sm space-y-4 flex flex-col justify-between hover:border-emerald-800 transition">
-          <div class="space-y-2.5">
-            <div class="flex justify-between items-start">
-              <span class="bg-linen-100 text-charcoal-700 text-[10px] font-bold px-2 py-0.5 rounded border border-linen-300">Farm Machinery & Solar</span>
-              <span class="text-xs font-mono font-bold text-linen-700">8 Yrs Exp</span>
-            </div>
-            <h3 class="font-display font-bold text-lg text-charcoal-900">Ramu Prajapati</h3>
-            <p class="text-xs text-charcoal-500 flex items-center gap-1">
-              <i data-lucide="map-pin" class="w-3 h-3 text-charcoal-400"></i> Baberu Block, Banda (UP)
-            </p>
-            <div class="p-3 bg-linen-50 rounded-xl border border-linen-200 text-xs italic text-charcoal-700 leading-relaxed">
-              "हम 8 साल से गाँव में ट्यूबवेल और सोलर पंप की मोटर रिपेयर करते हैं..."
-            </div>
-          </div>
-          <button onclick="selectProfileAndSwitch('solar_pump')" class="w-full py-2.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-display font-bold text-xs transition flex items-center justify-center space-x-1.5">
-            <i data-lucide="play" class="w-3.5 h-3.5"></i>
-            <span>Load Record into Desk</span>
-          </button>
-        </div>
-
-        <!-- CARD 3 -->
-        <div class="bg-white p-5 rounded-2xl border border-linen-300 shadow-sm space-y-4 flex flex-col justify-between hover:border-emerald-800 transition">
-          <div class="space-y-2.5">
-            <div class="flex justify-between items-start">
-              <span class="bg-linen-100 text-charcoal-700 text-[10px] font-bold px-2 py-0.5 rounded border border-linen-300">Rural Construction</span>
-              <span class="text-xs font-mono font-bold text-linen-700">9 Yrs Exp</span>
-            </div>
-            <h3 class="font-display font-bold text-lg text-charcoal-900">Ramesh Kumar</h3>
-            <p class="text-xs text-charcoal-500 flex items-center gap-1">
-              <i data-lucide="map-pin" class="w-3 h-3 text-charcoal-400"></i> Naraini Block, Banda (UP)
-            </p>
-            <div class="p-3 bg-linen-50 rounded-xl border border-linen-200 text-xs italic text-charcoal-700 leading-relaxed">
-              "हम 9 साल से राजमिस्त्री का काम कर रहे हैं, खेत की मेड़बंदी, पानी की टंकी..."
-            </div>
-          </div>
-          <button onclick="selectProfileAndSwitch('rural_mason')" class="w-full py-2.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-display font-bold text-xs transition flex items-center justify-center space-x-1.5">
-            <i data-lucide="play" class="w-3.5 h-3.5"></i>
-            <span>Load Record into Desk</span>
-          </button>
-        </div>
-
+        <div id="profile-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
       </div>
 
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- VIEW 3: DISTRICT GIA AGGREGATION MAP -->
-    <!-- ========================================================================= -->
-    <section id="view-dashboard" class="hidden space-y-6">
-      
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-linen-300 shadow-sm">
-        <div>
-          <h2 class="text-xl font-display font-bold text-charcoal-900">District GIA Livelihood Aggregation Map</h2>
-          <p class="text-xs text-charcoal-600">Aggregated from rural CSC intake records to justify PM-AJAY GIA project proposals.</p>
-        </div>
-        
-        <!-- DISTRICT FILTER & EXPORT -->
-        <div class="flex flex-wrap items-center gap-3">
-          <div class="relative">
-            <select id="district-filter-select" onchange="changeDistrictData(this.value)" class="appearance-none bg-linen-50 border border-linen-300 rounded-lg pl-3 pr-8 py-2 text-xs font-bold text-charcoal-900 focus:ring-1 focus:ring-emerald-800 outline-none cursor-pointer">
-              <option value="banda" selected>Banda District (UP - Bundelkhand)</option>
-              <option value="vidarbha">Amravati District (Maharashtra - Vidarbha)</option>
-              <option value="salem">Salem District (Tamil Nadu)</option>
-              <option value="gaya">Gaya District (Bihar)</option>
-            </select>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-charcoal-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-          </div>
-          <button onclick="generateGIAProposalPDF()" class="bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-display font-bold px-3.5 py-2 rounded-lg flex items-center space-x-1.5 shadow-xs transition">
-            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-            <span>Export District Proposal</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- DYNAMIC METRIC CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white p-4.5 rounded-xl border border-linen-300 shadow-sm space-y-1">
-          <p class="text-xs text-charcoal-500 font-medium">Uncertified Rural Artisans</p>
-          <h3 class="text-2xl font-display font-bold text-charcoal-900" id="stat-total-artisans">1,482</h3>
-          <p class="text-[11px] text-emerald-800 font-semibold">Eligible for Direct RPL</p>
-        </div>
-        <div class="bg-white p-4.5 rounded-xl border border-linen-300 shadow-sm space-y-1">
-          <p class="text-xs text-charcoal-500 font-medium">Dominant Cluster</p>
-          <h3 class="text-xl font-display font-bold text-charcoal-900" id="stat-top-cluster">Agro & FoodTech</h3>
-          <p class="text-[11px] text-charcoal-500" id="stat-top-trade">Pulse & Spice milling</p>
-        </div>
-        <div class="bg-white p-4.5 rounded-xl border border-linen-300 shadow-sm space-y-1">
-          <p class="text-xs text-charcoal-500 font-medium">Reachability Voids</p>
-          <h3 class="text-2xl font-display font-bold text-rose-700" id="stat-voids">2 Clusters</h3>
-          <p class="text-[11px] text-rose-700 font-semibold">Distance > 45 km to Center</p>
-        </div>
-        <div class="bg-white p-4.5 rounded-xl border border-linen-300 shadow-sm space-y-1">
-          <p class="text-xs text-charcoal-500 font-medium">Mobile RPL Grant Justified</p>
-          <h3 class="text-2xl font-display font-bold text-emerald-800" id="stat-budget">₹ 24.5 L</h3>
-          <p class="text-[11px] text-charcoal-500">PM-AJAY GIA Component</p>
-        </div>
-      </div>
-
-      <!-- MAP & CLUSTER EVIDENCE -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-7 bg-white rounded-2xl border border-linen-300 shadow-sm p-4 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-charcoal-800 flex items-center gap-1.5">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-800"></i>
-              <span id="map-title-district">Banda District Cluster Map:</span>
-            </span>
-            <span class="text-[10px] text-linen-700 font-mono bg-linen-100 px-2 py-0.5 rounded border border-linen-200">OpenStreetMap Layer</span>
-          </div>
-          <div id="district-map" class="w-full h-[380px] rounded-xl z-10 border border-linen-200"></div>
-        </div>
-
-        <div class="lg:col-span-5 bg-white rounded-2xl border border-linen-300 shadow-sm p-5 space-y-3.5">
-          <h4 class="font-display font-bold text-charcoal-900 text-sm border-b border-linen-200 pb-2.5">District Cluster Ground-Truth</h4>
-          <div id="cluster-evidence-list" class="space-y-2.5 text-xs">
-            <!-- Dynamically populated via app.js -->
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- VIEW 4: NQR MASTER REGISTRY & QUALIFICATION CATALOG -->
-    <!-- ========================================================================= -->
-    <section id="view-nqr" class="hidden space-y-6">
-      
-      <div class="bg-white p-6 rounded-2xl border border-linen-300 shadow-sm space-y-4">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <!-- ============================ VIEW 3: DISTRICT MAP -->
+      <div id="view-dashboard" class="hidden space-y-6">
+        <div class="glass p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div class="flex items-center space-x-2 mb-1">
-              <span class="bg-linen-100 text-charcoal-700 border border-linen-300 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase">National Qualification Register</span>
+            <h3 class="font-display font-bold text-xl">District livelihood aggregation</h3>
+            <p class="text-sm text-mut">Clusters aggregated from CSC intake, used to justify PM-AJAY GIA proposals.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <select id="district-filter-select" onchange="changeDistrictData(this.value)" class="field !w-auto">
+              <option value="banda" selected>Banda (UP · Bundelkhand)</option>
+              <option value="vidarbha">Amravati (Maharashtra · Vidarbha)</option>
+              <option value="salem">Salem (Tamil Nadu)</option>
+              <option value="gaya">Gaya (Bihar)</option>
+            </select>
+            <button onclick="generateGIAProposalPDF()" class="btn btn-gold"><i data-lucide="file-text" class="w-4 h-4"></i>Draft GIA proposal</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Uncertified artisans</p><h4 class="stat-num mt-2" id="stat-total-artisans">0</h4><p class="text-xs text-em font-semibold mt-2">eligible for direct RPL</p></div>
+          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Largest cluster</p><h4 class="font-display font-extrabold text-xl mt-2 leading-tight" id="stat-top-cluster">—</h4><p class="text-xs text-mut mt-2" id="stat-top-trade"></p></div>
+          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Reachability voids</p><h4 class="stat-num mt-2 text-rose" id="stat-voids">0</h4><p class="text-xs text-rose font-semibold mt-2" id="stat-void-artisans"></p></div>
+          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Mobile RPL grant justified</p><h4 class="stat-num mt-2 text-gold" id="stat-budget">₹0</h4><p class="text-xs text-mut mt-2">PM-AJAY GIA component</p></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-7 glass p-4 space-y-3">
+            <div class="flex items-center justify-between px-1">
+              <span class="text-sm font-bold flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-em"></i><span id="map-title-district"></span></span>
+              <span class="flex items-center gap-3 text-[11px] text-mut font-semibold"><span class="flex items-center gap-1.5"><span class="dot"></span>reachable</span><span class="flex items-center gap-1.5"><span class="dot live" style="animation:none"></span>void</span></span>
             </div>
-            <h2 class="text-xl font-display font-bold text-charcoal-900">Official NSQF Qualification Standards & QP-NOS Registry</h2>
-            <p class="text-xs text-charcoal-500">All trades retrieved deterministically with official QP codes, NSQF levels, and RPL evaluation blueprints.</p>
+            <div id="district-map" class="w-full h-[420px] rounded-2xl" style="z-index:1"></div>
           </div>
-
-          <!-- SEARCH INPUT -->
-          <div class="relative w-full md:w-72">
-            <input type="text" id="nqr-search-input" onkeyup="filterNQRInteractive()" placeholder="Search trade, QP code, or skill..." class="w-full text-xs pl-8 pr-3 py-2 rounded-lg border border-linen-300 bg-linen-50 focus:bg-white focus:ring-1 focus:ring-emerald-800 outline-none">
-            <i data-lucide="search" class="w-3.5 h-3.5 text-charcoal-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+          <div class="lg:col-span-5 glass p-6 space-y-4">
+            <h4 class="font-display font-bold text-lg">Cluster ground truth</h4>
+            <div id="cluster-evidence-list" class="space-y-3"></div>
           </div>
         </div>
-
-        <!-- SECTOR FILTER BUTTONS -->
-        <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs border-t border-linen-200 pt-3">
-          <span class="text-charcoal-500 font-semibold text-[11px] whitespace-nowrap">Filter Sector:</span>
-          <button onclick="filterNQRByCategory('ALL')" id="filter-pill-ALL" class="nqr-filter-pill active px-3 py-1 rounded-md font-bold bg-emerald-800 text-white transition whitespace-nowrap">
-            All Sectors
-          </button>
-          <button onclick="filterNQRByCategory('Agro-FoodTech (ODOP)')" id="filter-pill-Agro" class="nqr-filter-pill px-3 py-1 rounded-md font-semibold bg-linen-100 text-charcoal-700 hover:bg-linen-200 transition whitespace-nowrap border border-linen-300">
-            Agro & FoodTech
-          </button>
-          <button onclick="filterNQRByCategory('Farm Machinery & Solar')" id="filter-pill-Machinery" class="nqr-filter-pill px-3 py-1 rounded-md font-semibold bg-linen-100 text-charcoal-700 hover:bg-linen-200 transition whitespace-nowrap border border-linen-300">
-            Farm Machinery & Solar
-          </button>
-          <button onclick="filterNQRByCategory('Rural Infrastructure')" id="filter-pill-Infra" class="nqr-filter-pill px-3 py-1 rounded-md font-semibold bg-linen-100 text-charcoal-700 hover:bg-linen-200 transition whitespace-nowrap border border-linen-300">
-            Rural Construction
-          </button>
-          <button onclick="filterNQRByCategory('PM Vishwakarma Artisan')" id="filter-pill-Vishwakarma" class="nqr-filter-pill px-3 py-1 rounded-md font-semibold bg-linen-100 text-charcoal-700 hover:bg-linen-200 transition whitespace-nowrap border border-linen-300">
-            PM Vishwakarma Crafts
-          </button>
-          <button onclick="filterNQRByCategory('Dairy & Livestock')" id="filter-pill-Dairy" class="nqr-filter-pill px-3 py-1 rounded-md font-semibold bg-linen-100 text-charcoal-700 hover:bg-linen-200 transition whitespace-nowrap border border-linen-300">
-            Dairy & Livestock
-          </button>
-        </div>
       </div>
 
-      <!-- CARDS CONTAINER -->
-      <div id="nqr-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Injected dynamically via app.js -->
+      <!-- ============================ VIEW 4: REGISTRY -->
+      <div id="view-nqr" class="hidden space-y-6">
+        <div class="glass p-6 space-y-5">
+          <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+            <div>
+              <h3 class="font-display font-bold text-xl">Qualification register</h3>
+              <p class="text-sm text-mut">Every trade the engine can match, with QP code, level and the RPL assessment blueprint.</p>
+            </div>
+            <div class="relative w-full md:w-80">
+              <input type="text" id="nqr-search-input" oninput="filterNQRInteractive()" placeholder="Search trade, QP code or skill…" class="field !pl-10">
+              <i data-lucide="search" class="w-4 h-4 text-mut absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            </div>
+          </div>
+          <div id="nqr-pills" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+        </div>
+        <div id="nqr-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
       </div>
 
-    </section>
-
-  </main>
-
-  <!-- ========================================================================= -->
-  <!-- QUALIFICATION BLUEPRINT MODAL -->
-  <!-- ========================================================================= -->
-  <div id="nqr-detail-modal" class="hidden fixed inset-0 bg-charcoal-900/50 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-    <div class="bg-white max-w-xl w-full rounded-2xl shadow-xl p-6 border border-linen-300 space-y-4 text-charcoal-900 relative max-h-[90vh] overflow-y-auto">
-      
-      <button onclick="closeNQRDetailModal()" class="absolute top-4 right-4 text-charcoal-400 hover:text-charcoal-900 p-1.5 rounded-lg hover:bg-linen-100 transition">
-        <i data-lucide="x" class="w-4 h-4"></i>
-      </button>
-
-      <div class="space-y-1">
-        <div class="flex items-center space-x-2">
-          <span id="detail-category-badge" class="bg-linen-100 text-charcoal-700 border border-linen-300 text-[10px] font-bold px-2 py-0.5 rounded">Agro-FoodTech</span>
-          <span id="detail-qp-code" class="font-mono text-xs font-bold text-charcoal-600">FIC/Q0104</span>
+      <!-- ============================ VIEW 5: INTAKE REGISTER -->
+      <div id="view-history" class="hidden space-y-6">
+        <div class="glass p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="font-display font-bold text-xl">Kiosk intake register</h3>
+            <p class="text-sm text-mut">Every evaluated beneficiary is saved on this device, so the kiosk keeps working offline.</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="exportHistoryCSV()" class="btn btn-ghost"><i data-lucide="download" class="w-4 h-4"></i>Export CSV</button>
+            <button onclick="clearHistory()" class="btn btn-ghost"><i data-lucide="trash-2" class="w-4 h-4"></i>Clear</button>
+          </div>
         </div>
-        <h3 id="detail-title" class="text-lg font-display font-bold text-charcoal-900">Pulse, Grain & Spice Processing Operator</h3>
-        <p id="detail-sector" class="text-xs text-charcoal-500">Food Industry Capacity & Skill Initiative (FICSI)</p>
-      </div>
-
-      <!-- SPECIFICATION GRID -->
-      <div class="grid grid-cols-3 gap-2.5 text-xs bg-linen-50 p-3 rounded-xl border border-linen-200">
-        <div>
-          <span class="text-charcoal-500 block text-[10px] uppercase font-bold">NSQF Level</span>
-          <span id="detail-level" class="font-bold text-emerald-800 text-sm">Level 4</span>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-8 glass p-2 overflow-x-auto">
+            <table class="tbl">
+              <thead><tr><th>Beneficiary</th><th>Matched trade</th><th>Level</th><th>Centre</th><th>Status</th><th>Token</th></tr></thead>
+              <tbody id="history-body"></tbody>
+            </table>
+            <div id="history-empty" class="text-center py-14 text-mut text-sm">No intakes yet. Evaluate a beneficiary on the voice desk and it lands here.</div>
+          </div>
+          <div class="lg:col-span-4 glass p-6 space-y-4">
+            <h4 class="font-display font-bold text-lg">Demand by trade</h4>
+            <div id="history-bars" class="space-y-4"></div>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+              <div class="inset p-3"><div class="text-[11px] text-mut font-bold">Reachable</div><div class="font-display font-extrabold text-2xl text-em" id="hist-reach">0</div></div>
+              <div class="inset p-3"><div class="text-[11px] text-mut font-bold">Flagged void</div><div class="font-display font-extrabold text-2xl text-rose" id="hist-void">0</div></div>
+            </div>
+          </div>
         </div>
-        <div>
-          <span class="text-charcoal-500 block text-[10px] uppercase font-bold">RPL Time</span>
-          <span id="detail-rpl" class="font-bold text-charcoal-900 text-sm">12 Hours (2 Days)</span>
-        </div>
-        <div>
-          <span class="text-charcoal-500 block text-[10px] uppercase font-bold">PM-AJAY Grant</span>
-          <span class="font-bold text-emerald-800 text-sm">100% Free</span>
-        </div>
-      </div>
-
-      <!-- NOS COMPETENCIES -->
-      <div class="space-y-1.5 text-xs">
-        <h4 class="font-bold text-charcoal-900">National Occupational Standards (NOS Core Competencies):</h4>
-        <ul id="detail-nos-list" class="space-y-1 text-charcoal-700 list-disc list-inside bg-white p-3 rounded-lg border border-linen-200">
-          <!-- Dynamically populated -->
-        </ul>
-      </div>
-
-      <!-- CENTER -->
-      <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs space-y-1">
-        <div class="font-bold text-emerald-900 flex items-center gap-1">
-          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-800"></i>
-          <span>Accredited District Assessment Center:</span>
-        </div>
-        <p id="detail-center" class="text-emerald-800">KVK Agro Science Center, Banda (11.2 km away)</p>
-      </div>
-
-      <div class="flex items-center justify-between pt-2 border-t border-linen-200">
-        <button onclick="closeNQRDetailModal()" class="px-3.5 py-2 rounded-lg bg-linen-100 hover:bg-linen-200 text-charcoal-700 text-xs font-semibold">
-          Close
-        </button>
-        <button onclick="testThisQualificationInKiosk()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-display font-bold text-xs px-3.5 py-2 rounded-lg flex items-center space-x-1.5 transition">
-          <i data-lucide="play" class="w-3.5 h-3.5"></i>
-          <span>Load into Intake Desk</span>
-        </button>
       </div>
 
     </div>
-  </div>
+  </section>
 
-  <!-- ========================================================================= -->
-  <!-- ACTION SLIP PREVIEW MODAL -->
-  <!-- ========================================================================= -->
-  <div id="print-modal" class="hidden fixed inset-0 bg-charcoal-900/50 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-    <div class="bg-white max-w-md w-full rounded-2xl shadow-xl p-6 border border-linen-300 space-y-4 text-charcoal-900 relative">
-      
-      <button onclick="closePrintModal()" class="absolute top-4 right-4 text-charcoal-400 hover:text-charcoal-900 p-1.5 rounded-lg hover:bg-linen-100 transition">
-        <i data-lucide="x" class="w-4 h-4"></i>
-      </button>
-
-      <div class="border-b border-linen-200 pb-3">
-        <h3 class="font-display font-bold text-base text-charcoal-900">Official Action Slip Preview</h3>
-        <p class="text-xs text-charcoal-500">Download formatted A4 document for beneficiary</p>
+  <footer class="border-t border-white/10 py-10 mt-10" style="background:rgba(0,0,0,.4);backdrop-filter:blur(10px)">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row justify-between gap-6 text-sm text-mut">
+      <div>
+        <div class="font-display font-extrabold text-ink text-lg">HUNAR <span class="deva text-em">हुनर</span></div>
+        <p class="mt-1 max-w-md">Voice-driven RPL certification and livelihood mapping for the PM-AJAY Grants-in-Aid component. A Smart India Hackathon 2026 prototype; registry data shown is illustrative.</p>
       </div>
-
-      <div class="bg-linen-50 rounded-xl p-4 border border-linen-300 space-y-3 text-xs">
-        <div class="border-b border-linen-200 pb-2">
-          <div class="text-[9px] uppercase tracking-wider text-gold-700 font-bold">PM-AJAY GIA Component</div>
-          <div class="font-display font-bold text-sm text-charcoal-900">HUNAR LIVELIHOOD ACTION SLIP</div>
-        </div>
-        <div class="space-y-1.5 text-[11px]">
-          <div>Beneficiary: <b class="text-charcoal-900" id="preview-user-name">Chhedilal Verma</b></div>
-          <div>Location: <b class="text-charcoal-900" id="preview-user-dist">Tindwari Village, Banda (UP)</b></div>
-          <div>Trade: <b class="text-emerald-800" id="preview-user-trade">Pulse, Grain & Spice Processing Operator</b></div>
-          <div>Center: <b class="text-charcoal-900" id="preview-user-center">KVK Agro Science Center, Banda</b></div>
-        </div>
+      <div class="flex flex-wrap items-start gap-3">
+        <a class="btn btn-ghost btn-sm" href="hunar-report.html" target="_blank" rel="noopener"><i data-lucide="file-text" class="w-4 h-4"></i>Report (web)</a>
+        <a class="btn btn-ghost btn-sm" href="HUNAR_Executive_Report.docx" download><i data-lucide="file-down" class="w-4 h-4"></i>Report (.docx)</a>
+        <a class="btn btn-ghost btn-sm" href="HUNAR_Executive_Report.pdf" target="_blank" rel="noopener"><i data-lucide="file" class="w-4 h-4"></i>Report (PDF)</a>
       </div>
+    </div>
+  </footer>
 
-      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-linen-200">
-        <button onclick="closePrintModal()" class="px-3 py-2 rounded-lg bg-linen-100 text-charcoal-700 font-semibold text-xs">
-          Cancel
-        </button>
-        <button onclick="downloadSlipDirectPDF()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-display font-bold px-4 py-2 rounded-lg flex items-center space-x-1.5 text-xs transition shadow-xs">
-          <i data-lucide="download" class="w-3.5 h-3.5"></i>
-          <span>Save PDF Document</span>
-        </button>
+  <!-- ================================================================== MODALS -->
+  <div id="nqr-detail-modal" class="modal hidden" onclick="if(event.target===this)closeNQRDetailModal()">
+    <div class="modal-card glass glass-solid max-w-xl w-full p-7 space-y-5 relative">
+      <button onclick="closeNQRDetailModal()" class="absolute top-4 right-4 btn btn-ghost btn-sm !p-2" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <div>
+        <div class="flex items-center gap-2"><span id="detail-category-badge" class="chip chip-gold"></span><span id="detail-qp-code" class="mono text-sm font-bold text-em"></span></div>
+        <h3 id="detail-title" class="font-display font-extrabold text-2xl mt-3 leading-tight"></h3>
+        <p id="detail-sector" class="text-sm text-mut mt-1"></p>
       </div>
-
+      <div class="grid grid-cols-3 gap-3">
+        <div class="inset p-3"><div class="text-[10px] uppercase tracking-widest text-dim font-bold">NSQF</div><div id="detail-level" class="font-bold text-gold mt-1"></div></div>
+        <div class="inset p-3"><div class="text-[10px] uppercase tracking-widest text-dim font-bold">RPL time</div><div id="detail-rpl" class="font-bold mt-1 text-sm"></div></div>
+        <div class="inset p-3"><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Cost</div><div class="font-bold text-em mt-1">100% free</div></div>
+      </div>
+      <div>
+        <h4 class="font-bold text-sm mb-2">Core competencies assessed</h4>
+        <ul id="detail-nos-list" class="space-y-2 text-sm text-mut inset p-4"></ul>
+      </div>
+      <div class="inset p-4 text-sm flex items-start gap-2" style="border-color:rgba(52,211,153,.35)"><i data-lucide="map-pin" class="w-4 h-4 text-em mt-0.5 flex-none"></i><span id="detail-center"></span></div>
+      <div class="flex items-center justify-between">
+        <button onclick="closeNQRDetailModal()" class="btn btn-ghost">Close</button>
+        <button onclick="testThisQualificationInKiosk()" class="btn btn-primary"><i data-lucide="play" class="w-4 h-4"></i>Load into voice desk</button>
+      </div>
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- PERFECT A4 PDF CONTAINER (SEAMLESS 4-SIDED CONTINUOUS BORDER) -->
-  <!-- ========================================================================= -->
+  <div id="print-modal" class="modal hidden" onclick="if(event.target===this)closePrintModal()">
+    <div class="modal-card glass glass-solid max-w-md w-full p-7 space-y-5 relative">
+      <button onclick="closePrintModal()" class="absolute top-4 right-4 btn btn-ghost btn-sm !p-2" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <div>
+        <h3 class="font-display font-bold text-xl">Action slip</h3>
+        <p class="text-sm text-mut">A4 document for the beneficiary to carry to the centre.</p>
+      </div>
+      <div class="inset p-4 space-y-2 text-sm">
+        <div class="text-[10px] uppercase tracking-[.2em] text-gold font-bold">Hunar livelihood action slip</div>
+        <div><span class="text-mut">Beneficiary:</span> <b id="preview-user-name"></b></div>
+        <div><span class="text-mut">Location:</span> <b id="preview-user-dist"></b></div>
+        <div><span class="text-mut">Trade:</span> <b class="text-em" id="preview-user-trade"></b></div>
+        <div><span class="text-mut">Centre:</span> <b id="preview-user-center"></b></div>
+      </div>
+      <div class="flex items-center justify-end gap-3">
+        <button onclick="closePrintModal()" class="btn btn-ghost">Cancel</button>
+        <button onclick="downloadSlipDirectPDF()" class="btn btn-gold"><i data-lucide="download" class="w-4 h-4"></i>Save PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gia-modal" class="modal hidden" onclick="if(event.target===this)closeGIAModal()">
+    <div class="modal-card glass glass-solid max-w-3xl w-full p-6 sm:p-7 relative">
+      <button onclick="closeGIAModal()" class="absolute top-4 right-4 btn btn-ghost btn-sm !p-2" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <h3 class="font-display font-bold text-xl">GIA proposal builder</h3>
+      <p class="text-sm text-mut">Budget = (unserved artisans × per-artisan cost) + mobile tooling van capex.</p>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mt-5">
+        <div class="md:col-span-2 space-y-6">
+          <div>
+            <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Cost per artisan</span><span class="mono text-em" id="gia-per-val">₹15,000</span></div>
+            <input type="range" id="gia-per" min="8000" max="25000" step="500" value="15000" oninput="renderGIAProposal()">
+          </div>
+          <div>
+            <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Mobile van capex</span><span class="mono text-em" id="gia-van-val">₹4,00,000</span></div>
+            <input type="range" id="gia-van" min="200000" max="1200000" step="50000" value="400000" oninput="renderGIAProposal()">
+          </div>
+          <div class="inset p-4">
+            <div class="text-xs text-mut font-bold">Grant justified</div>
+            <div class="stat-num text-gold mt-2" id="gia-total">₹0</div>
+            <div class="text-xs text-dim mt-2" id="gia-per-head"></div>
+          </div>
+          <button onclick="downloadGIAProposal()" class="btn btn-gold btn-block"><i data-lucide="download" class="w-4 h-4"></i>Download proposal PDF</button>
+        </div>
+        <div class="md:col-span-3">
+          <div id="gia-paper" class="paper p-6 text-[12px] leading-relaxed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cmdk" class="modal hidden" style="align-items:flex-start;padding-top:14vh" onclick="if(event.target===this)closeCmdk()">
+    <div class="modal-card glass glass-solid max-w-lg w-full p-3">
+      <div class="flex items-center gap-3 px-3 py-2 border-b border-white/10">
+        <i data-lucide="search" class="w-4 h-4 text-mut"></i>
+        <input id="cmdk-input" type="text" placeholder="Jump to a view, load a profile, switch district…" class="flex-1 bg-transparent outline-none text-sm font-semibold py-2" oninput="renderCmdk()">
+        <kbd>esc</kbd>
+      </div>
+      <div id="cmdk-list" class="py-2 max-h-[46vh] overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- ================================================================== A4 PDF TEMPLATE (off-screen, light) -->
   <div id="pdf-export-wrapper" style="position: fixed; left: 0; top: 0; width: 720px; z-index: -9999; opacity: 0; pointer-events: none; background: #ffffff;">
     <div id="pdf-clean-export-container" style="width: 700px; margin: 0 auto; padding: 16px; background: #ffffff; box-sizing: border-box;">
-      
-      <!-- 4-SIDED SOLID BORDER CERTIFICATE BOX -->
       <div style="width: 100%; border: 3px solid #0F382A; border-radius: 12px; padding: 26px 30px; background: #ffffff; color: #181614; font-family: 'Plus Jakarta Sans', Arial, sans-serif; box-sizing: border-box;">
-        
-        <!-- Official Header with Gold & Emerald Accents -->
         <div style="text-align: center; border-bottom: 2px solid #0F382A; padding-bottom: 14px; margin-bottom: 18px;">
-          <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #855628; margin-bottom: 4px;">
-            Government of India • Ministry of Social Justice & Empowerment
-          </div>
-          <div style="font-size: 20px; font-weight: 900; color: #0F382A; letter-spacing: -0.3px; margin: 4px 0;">
-            HUNAR LIVELIHOOD ACTION SLIP
-          </div>
-          <div style="font-size: 11px; color: #5C544D; font-weight: 600;">
-            Pradhan Mantri Anusuchit Jaati Abhyuday Yojana (PM-AJAY) • Grants-in-Aid (GIA) Component
-          </div>
+          <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #855628; margin-bottom: 4px;">Government of India • Ministry of Social Justice &amp; Empowerment</div>
+          <div style="font-size: 20px; font-weight: 900; color: #0F382A; letter-spacing: -0.3px; margin: 4px 0;">HUNAR LIVELIHOOD ACTION SLIP</div>
+          <div style="font-size: 11px; color: #5C544D; font-weight: 600;">Pradhan Mantri Anusuchit Jaati Abhyuday Yojana (PM-AJAY) • Grants-in-Aid (GIA) Component</div>
         </div>
-
-        <!-- Beneficiary Details Grid -->
         <div style="background: #FAF8F5; border: 1px solid #DDD5C4; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; box-sizing: border-box;">
-          <div style="font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #855628; margin-bottom: 10px; border-bottom: 1px solid #EAE4D8; padding-bottom: 4px;">
-            Beneficiary Assessment Record
-          </div>
+          <div style="font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #855628; margin-bottom: 10px; border-bottom: 1px solid #EAE4D8; padding-bottom: 4px;">Beneficiary Assessment Record</div>
           <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-            <tr>
-              <td style="padding: 4px 0; color: #7F756B; font-weight: 600; width: 42%;">Beneficiary Full Name:</td>
-              <td style="padding: 4px 0; color: #181614; font-weight: 800; font-size: 13px;" id="pdf-user-name">Chhedilal Verma</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 0; color: #7F756B; font-weight: 600;">Village & District:</td>
-              <td style="padding: 4px 0; color: #181614; font-weight: 700;" id="pdf-user-dist">Tindwari Village, Banda (UP)</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 0; color: #7F756B; font-weight: 600;">Documented Practical Work:</td>
-              <td style="padding: 4px 0; color: #181614; font-weight: 700;" id="pdf-user-exp">7 Years Practical Mastery</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 0; color: #7F756B; font-weight: 600;">Target Qualification Level:</td>
-              <td style="padding: 4px 0; color: #0F382A; font-weight: 800;" id="pdf-user-level">NSQF Level 4 (Direct RPL)</td>
-            </tr>
+            <tr><td style="padding: 4px 0; color: #7F756B; font-weight: 600; width: 42%;">Beneficiary Full Name:</td><td style="padding: 4px 0; color: #181614; font-weight: 800; font-size: 13px;" id="pdf-user-name"></td></tr>
+            <tr><td style="padding: 4px 0; color: #7F756B; font-weight: 600;">Village &amp; District:</td><td style="padding: 4px 0; color: #181614; font-weight: 700;" id="pdf-user-dist"></td></tr>
+            <tr><td style="padding: 4px 0; color: #7F756B; font-weight: 600;">Documented Practical Work:</td><td style="padding: 4px 0; color: #181614; font-weight: 700;" id="pdf-user-exp"></td></tr>
+            <tr><td style="padding: 4px 0; color: #7F756B; font-weight: 600;">Target Qualification Level:</td><td style="padding: 4px 0; color: #0F382A; font-weight: 800;" id="pdf-user-level"></td></tr>
           </table>
         </div>
-
-        <!-- NSQF Qualification & Assessment Details -->
         <div style="border: 1.5px solid #0F382A; border-radius: 8px; padding: 16px 18px; margin-bottom: 18px; background: #FFFFFF; box-sizing: border-box;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #DCEDE5; padding-bottom: 6px;">
-            <div style="font-size: 14px; font-weight: 900; color: #0F382A;" id="pdf-trade-title">Pulse, Grain & Spice Processing Operator</div>
-            <div style="font-size: 10px; font-weight: 800; background: #DCEDE5; color: #0F382A; padding: 3px 8px; border-radius: 4px; font-family: monospace;" id="pdf-qp-code">QP: FIC/Q0104</div>
+            <div style="font-size: 14px; font-weight: 900; color: #0F382A;" id="pdf-trade-title"></div>
+            <div style="font-size: 10px; font-weight: 800; background: #DCEDE5; color: #0F382A; padding: 3px 8px; border-radius: 4px; font-family: monospace;" id="pdf-qp-code"></div>
           </div>
           <div style="font-size: 11px; color: #3D3833; line-height: 1.65;">
-            <div style="margin-bottom: 3px;">• <b>Assessment Duration:</b> 12 Hours (2-Day Practical Skill Assessment)</div>
-            <div style="margin-bottom: 3px;">• <b>Nearest Accredited Center:</b> <span id="pdf-center-name" style="color: #181614; font-weight: 700;">KVK Agro Science Center, Banda (11.2 km)</span></div>
+            <div style="margin-bottom: 3px;">• <b>Assessment Duration:</b> <span id="pdf-duration"></span></div>
+            <div style="margin-bottom: 3px;">• <b>Nearest Accredited Center:</b> <span id="pdf-center-name" style="color: #181614; font-weight: 700;"></span></div>
             <div style="margin-bottom: 3px;">• <b>Beneficiary Cost:</b> <span style="color: #0F382A; font-weight: 800;">₹0 (100% GIA Grant Subsidized)</span></div>
-            <div>• <b>Direct Entitlement:</b> Official National Skill Certificate + ₹500 Direct DBT Allowance.</div>
+            <div>• <b>Direct Entitlement:</b> <span id="pdf-stipend"></span></div>
           </div>
         </div>
-
-        <!-- Verification Footer -->
         <div style="border-top: 1.5px dashed #DDD5C4; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #7F756B;">
-          <div>
-            Verification Token: <b style="color: #181614; font-family: monospace; font-size: 11px;" id="pdf-verif-code">HN-2026-BND-0814</b>
-          </div>
-          <div style="font-weight: 800; color: #0F382A;">
-            Verified via Hunar NSQF Deterministic Engine
-          </div>
+          <div>Verification Token: <b style="color: #181614; font-family: monospace; font-size: 11px;" id="pdf-verif-code"></b></div>
+          <div style="font-weight: 800; color: #0F382A;">Verified via Hunar NSQF Deterministic Engine</div>
         </div>
-
       </div>
     </div>
   </div>
 
+  <script src="scene.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
