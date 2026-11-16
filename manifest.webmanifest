@@ -1,0 +1,10 @@
+{
+  "name": "HUNAR — Voice-Driven Rural Skill Certification",
+  "short_name": "HUNAR",
+  "description": "Speak your work. Get matched to a national qualification and a centre within a one-day commute.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4ead5",
+  "theme_color": "#ffa30f",
+  "icons": [{ "src": "hunar-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

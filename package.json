@@ -1,0 +1,13 @@
+{
+  "name": "hunar",
+  "version": "2.0.0",
+  "description": "Voice-driven rural RPL certification and livelihood mapping, with an offline-first sync backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT",
+  "private": true
+}

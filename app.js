@@ -305,7 +305,7 @@ const KPI_ROWS = [
 // ============================================================================
 // 4. STATE + HELPERS
 // ============================================================================
-const HISTORY_KEY = 'hunar_intake_register_v1';
+const HISTORY_KEY = 'hunar_intake_register_v1'; // legacy local-only register, migrated into sync on first run
 const $ = (id) => document.getElementById(id);
 const FX = window.HUNAR_FX || (window.HUNAR_FX = { level: 0, burst() {} });
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -325,7 +325,6 @@ let activeNQRFilter = 'ALL';
 let currentMatchedQP = null;
 let currentMatch = null;
 let currentSelectedLanguage = 'hi-IN';
-let intakeHistory = loadHistory();
 
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -354,6 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProfileCards();
   renderNQRPills();
   renderNQRCards(NQR_DATABASE);
+  migrateLegacyHistory();
+  initSyncUI();
   renderHistory();
   updateCalculator();
   initWaveform();
@@ -404,6 +405,8 @@ function initMotion() {
     el.classList.remove('tilting');
     el.style.setProperty('--rx', '0deg');
     el.style.setProperty('--ry', '0deg');
+    el.style.setProperty('--sx', '0px');
+    el.style.setProperty('--sy', '0px');
   };
   document.addEventListener('pointermove', (e) => {
     if (glow) glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
@@ -420,6 +423,8 @@ function initMotion() {
     el.style.setProperty('--mx', `${px * 100}%`);
     el.style.setProperty('--my', `${py * 100}%`);
     el.style.setProperty('--mxn', px);
+    el.style.setProperty('--sx', `${-(px - 0.5) * 14}px`);
+    el.style.setProperty('--sy', `${-(py - 0.5) * 14}px`);
   }, { passive: true });
   document.addEventListener('pointerleave', () => { resetTilt(tilted); tilted = null; });
 }
@@ -606,9 +611,9 @@ function drawWaveform(now) {
   const gap = w / WF_BARS, bw = gap * 0.55;
   const live = isRecording || demoTyping;
   const grad = wfCtx.createLinearGradient(0, h, 0, 0);
-  grad.addColorStop(0, live ? '#0f6b4c' : '#1d3a2e');
-  grad.addColorStop(0.6, live ? '#34d399' : '#2c5a47');
-  grad.addColorStop(1, live ? '#f0b93a' : '#3b6b57');
+  grad.addColorStop(0, live ? '#1d7a4b' : '#5a4636');
+  grad.addColorStop(0.6, live ? '#ffa30f' : '#8a6a4a');
+  grad.addColorStop(1, live ? '#ffd98a' : '#a8855c');
   wfCtx.fillStyle = grad;
   for (let i = 0; i < WF_BARS; i++) {
     const bh = Math.max(4, wfLevels[i] * (h - 6));
@@ -1001,7 +1006,7 @@ function fireConfetti() {
   if (reducedMotion) return;
   const canvas = $('confetti'), ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  const colors = ['#34d399', '#f0b93a', '#5eead4', '#fde68a', '#ffffff'];
+  const colors = ['#ffa30f', '#e8412c', '#2a2f8f', '#1d7a4b', '#ff7eb6', '#1a1210'];
   const origin = $('rpl-main-card').getBoundingClientRect();
   const ox = origin.left + origin.width / 2, oy = Math.max(80, origin.top + 80);
   const parts = Array.from({ length: 140 }, () => {
@@ -1049,75 +1054,182 @@ function runGuidedDemo() {
 }
 
 // ============================================================================
-// 12. INTAKE REGISTER (localStorage)
+// 12. INTAKE REGISTER (offline-first; replicated by sync.js <-> server.js)
 // ============================================================================
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch (e) { return []; }
+function getHistory() {
+  return HunarSync.list('intakes').map((r) => ({ ...r.data, id: r.id, deviceId: r.deviceId, ts: r.updatedAt }));
 }
-function persistHistory() {
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(intakeHistory)); } catch (e) { /* storage unavailable: keep in memory */ }
+
+function migrateLegacyHistory() {
+  try {
+    const old = JSON.parse(localStorage.getItem(HISTORY_KEY) || 'null');
+    if (Array.isArray(old)) {
+      old.forEach((e) => {
+        if (!e || !e.token) return;
+        const { ts, ...data } = e;
+        HunarSync.put('intakes', HunarSync.newId(), data);
+      });
+    }
+    localStorage.removeItem(HISTORY_KEY);
+  } catch (e) { /* nothing to migrate */ }
 }
 
 function saveIntake(m) {
   const entry = {
     token: m.token, name: m.name || 'Beneficiary', loc: m.loc || '', exp: m.exp || '',
     qp: m.qp.qpCode, title: m.qp.title, level: m.qp.nsqfLevel, center: m.qp.nearestCenter,
-    km: m.qp.distanceKm, reachable: m.isReachable, ts: Date.now()
+    km: m.qp.distanceKm, reachable: m.isReachable
   };
-  intakeHistory = intakeHistory.filter((e) => e.token !== entry.token);
-  intakeHistory.unshift(entry);
-  intakeHistory = intakeHistory.slice(0, 200);
-  persistHistory();
-  renderHistory();
+  const existing = getHistory().find((e) => e.token === entry.token);
+  HunarSync.put('intakes', existing ? existing.id : HunarSync.newId(), entry);
+}
+
+function deleteIntake(id) {
+  HunarSync.remove('intakes', id);
 }
 
 function renderHistory() {
-  setText('hist-count', intakeHistory.length ? `(${intakeHistory.length})` : '');
-  const body = $('history-body');
-  $('history-empty').classList.toggle('hidden', intakeHistory.length > 0);
-  body.innerHTML = intakeHistory.map((e) => `
-    <tr>
+  const history = getHistory();
+  const me = HunarSync.info().deviceId;
+  setText('hist-count', history.length ? `(${history.length})` : '');
+  setText('hist-room', HunarSync.info().room);
+  $('history-empty').classList.toggle('hidden', history.length > 0);
+  $('history-body').innerHTML = history.map((e) => {
+    const mine = e.deviceId === me;
+    const fresh = !mine && Date.now() - e.ts < 6000;
+    return `
+    <tr class="${fresh ? 'fresh' : ''}">
       <td><div class="font-bold">${esc(e.name)}</div><div class="text-xs text-mut">${esc(e.loc)}</div></td>
-      <td><div class="font-semibold">${esc(e.title)}</div><div class="mono text-xs text-em">${esc(e.qp)}</div></td>
+      <td><div class="font-semibold">${esc(e.title)}</div><div class="mono text-xs" style="color:var(--indigo)">${esc(e.qp)}</div></td>
       <td><span class="chip chip-gold mono">L${esc(e.level)}</span></td>
-      <td class="text-xs text-mut" style="min-width:160px">${esc(e.center)}</td>
+      <td class="text-xs text-mut" style="min-width:150px">${esc(e.center)}</td>
       <td>${e.reachable ? '<span class="chip chip-em">Reachable</span>' : '<span class="chip chip-rose">Void</span>'}</td>
-      <td class="mono text-xs text-mut whitespace-nowrap">${esc(e.token)}</td>
-    </tr>`).join('');
+      <td><span class="chip ${mine ? '' : 'chip-gold'} mono" title="${esc(e.deviceId)}">${mine ? 'this kiosk' : '…' + esc(String(e.deviceId).slice(-4))}</span></td>
+      <td><button class="chip" onclick="deleteIntake('${esc(e.id)}')" title="Delete (syncs to all kiosks)" aria-label="Delete">✕</button></td>
+    </tr>`;
+  }).join('');
 
   const byTrade = {};
-  intakeHistory.forEach((e) => { byTrade[e.title] = (byTrade[e.title] || 0) + 1; });
+  history.forEach((e) => { byTrade[e.title] = (byTrade[e.title] || 0) + 1; });
   const rows = Object.entries(byTrade).sort((a, b) => b[1] - a[1]);
   const max = rows.length ? rows[0][1] : 1;
   $('history-bars').innerHTML = rows.length ? rows.map(([t, n]) => `
     <div>
-      <div class="flex justify-between text-xs mb-1.5"><span class="text-mut font-semibold truncate pr-3">${esc(t)}</span><span class="mono font-bold">${n}</span></div>
+      <div class="flex justify-between text-sm mb-1.5"><span class="font-semibold truncate pr-3">${esc(t)}</span><span class="mono font-bold">${n}</span></div>
       <div class="kpi-bar go"><i class="bar-after" style="--w:${(n / max) * 100}%"></i></div>
-    </div>`).join('') : '<p class="text-sm text-mut">Demand appears here as intakes are recorded.</p>';
-  setText('hist-reach', intakeHistory.filter((e) => e.reachable).length);
-  setText('hist-void', intakeHistory.filter((e) => !e.reachable).length);
+    </div>`).join('') : '<p class="text-mut">Demand appears here as intakes are recorded.</p>';
+  setText('hist-reach', history.filter((e) => e.reachable).length);
+  setText('hist-void', history.filter((e) => !e.reachable).length);
 }
 
 function exportHistoryCSV() {
-  if (!intakeHistory.length) { showEvalToast('Nothing to export', 'Evaluate at least one beneficiary first.'); return; }
+  const history = getHistory();
+  if (!history.length) { showEvalToast('Nothing to export', 'Evaluate at least one beneficiary first.'); return; }
   const cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const header = ['Token', 'Name', 'Location', 'Experience', 'QP Code', 'Qualification', 'NSQF Level', 'Centre', 'Distance (km)', 'Reachable', 'Recorded At'];
-  const lines = intakeHistory.map((e) => [e.token, e.name, e.loc, e.exp, e.qp, e.title, e.level, e.center, e.km, e.reachable ? 'Yes' : 'No', new Date(e.ts).toISOString()].map(cell).join(','));
+  const header = ['Token', 'Name', 'Location', 'Experience', 'QP Code', 'Qualification', 'NSQF Level', 'Centre', 'Distance (km)', 'Reachable', 'Kiosk', 'Updated At'];
+  const lines = history.map((e) => [e.token, e.name, e.loc, e.exp, e.qp, e.title, e.level, e.center, e.km, e.reachable ? 'Yes' : 'No', e.deviceId, new Date(e.ts).toISOString()].map(cell).join(','));
   const blob = new Blob(['﻿' + [header.map(cell).join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `hunar_intake_register_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `hunar_intake_register_${HunarSync.info().room}_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 function clearHistory() {
-  if (!intakeHistory.length) return;
-  if (!confirm(`Delete all ${intakeHistory.length} saved intake records from this device?`)) return;
-  intakeHistory = [];
-  persistHistory();
-  renderHistory();
+  const history = getHistory();
+  if (!history.length) return;
+  if (!confirm(`Delete all ${history.length} intake records in room "${HunarSync.info().room}"? This also removes them from every synced kiosk.`)) return;
+  history.forEach((e) => HunarSync.remove('intakes', e.id));
 }
+
+// ---- sync status UI -------------------------------------------------------
+const SYNC_LABEL = { connecting: 'Connecting', syncing: 'Syncing…', synced: 'Live', offline: 'Offline', local: 'Local only' };
+
+function ago(ts) {
+  if (!ts) return 'never';
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 5) return 'just now';
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.round(s / 60)} min ago`;
+  return new Date(ts).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+}
+
+function shareLink(i) {
+  const u = new URL(location.origin + location.pathname);
+  u.searchParams.set('room', i.room);
+  if (i.api !== location.origin) u.searchParams.set('api', i.api);
+  return u.toString();
+}
+
+function paintSync(i) {
+  const pill = $('sync-pill');
+  if (!pill) return;
+  pill.dataset.state = i.state;
+  let label = SYNC_LABEL[i.state] || i.state;
+  if (i.state === 'synced') label = `Live · ${i.online} kiosk${i.online === 1 ? '' : 's'}`;
+  else if (i.pending && i.state !== 'syncing') label += ` · ${i.pending} queued`;
+  setText('sync-pill-text', label);
+  setText('sync-room-label', i.room);
+  setText('hist-room', i.room);
+  setText('sync-state-big', SYNC_LABEL[i.state] || i.state);
+  setText('sync-online', i.online);
+  setText('sync-pending', i.pending);
+  setText('sync-last', ago(i.lastSync));
+  setText('sync-device', i.deviceId);
+  setText('sync-api', i.api.replace(/^https?:\/\//, ''));
+  const share = $('sync-share');
+  if (share) share.value = shareLink(i);
+}
+
+function initSyncUI() {
+  HunarSync.on('status', paintSync);
+  HunarSync.on('data', () => { renderHistory(); });
+  HunarSync.on('remote', ({ count }) => {
+    showEvalToast('Synced from another kiosk', `${count} intake record${count === 1 ? '' : 's'} arrived. The register is up to date.`);
+    FX.burst();
+  });
+  HunarSync.init();
+  paintSync(HunarSync.info());
+  setInterval(() => paintSync(HunarSync.info()), 5000);
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+function openSyncModal() {
+  $('sync-room-input').value = HunarSync.info().room;
+  setText('sync-room-error', '');
+  paintSync(HunarSync.info());
+  $('sync-modal').classList.remove('hidden');
+  icons();
+}
+function closeSyncModal() { $('sync-modal').classList.add('hidden'); }
+
+function joinRoomFromInput() {
+  const ok = HunarSync.setRoom($('sync-room-input').value);
+  setText('sync-room-error', ok ? '' : 'Use 3-40 characters: lowercase letters, digits and hyphens, starting with a letter or digit.');
+  if (ok) { renderHistory(); showEvalToast('Joined room', `This kiosk now syncs with "${HunarSync.info().room}".`); }
+}
+
+function copyShareLink() {
+  const v = $('sync-share').value;
+  const done = () => { setText('sync-copy', 'Copied!'); setTimeout(() => setText('sync-copy', 'Copy'), 1500); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done, () => { $('sync-share').select(); });
+  else { $('sync-share').select(); document.execCommand('copy'); done(); }
+}
+
+// Ink splats on click: purely decorative
+document.addEventListener('pointerdown', (e) => {
+  if (reducedMotion || e.pointerType === 'touch') return;
+  const colors = ['#ffa30f', '#e8412c', '#2a2f8f', '#ff7eb6'];
+  for (let i = 0; i < 7; i++) {
+    const d = document.createElement('div');
+    const size = 5 + Math.random() * 9, a = Math.random() * Math.PI * 2, dist = 18 + Math.random() * 38;
+    d.className = 'ink-splat';
+    d.style.cssText = `left:${e.clientX - size / 2}px;top:${e.clientY - size / 2}px;width:${size}px;height:${size}px;background:${colors[i % 4]};border:1.5px solid #1a1210`;
+    document.body.appendChild(d);
+    d.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(a) * dist}px,${Math.sin(a) * dist}px) scale(.2)`, opacity: 0 }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = () => d.remove();
+  }
+}, { passive: true });
 
 // ============================================================================
 // 13. DISTRICT MAP + AGGREGATION
@@ -1170,8 +1282,8 @@ function renderDistrictData(districtKey) {
     leafletMap.flyTo(data.center, data.zoom, { duration: reducedMotion ? 0 : 1.1 });
 
     data.clusters.forEach((c, i) => {
-      const color = c.isVoid ? '#fb7185' : '#34d399';
-      const circle = L.circle([c.lat, c.lng], { color, fillColor: color, fillOpacity: 0.16, weight: 1.5, radius: c.artisans * 22 }).addTo(leafletMap);
+      const color = c.isVoid ? '#e8412c' : '#1d7a4b';
+      const circle = L.circle([c.lat, c.lng], { color, fillColor: color, fillOpacity: 0.22, weight: 2, radius: c.artisans * 22 }).addTo(leafletMap);
       const pin = L.marker([c.lat, c.lng], {
         icon: L.divIcon({ className: '', html: `<div class="pulse-pin" style="--c:${color}"><i></i></div>`, iconSize: [16, 16], iconAnchor: [8, 8] })
       }).addTo(leafletMap);
@@ -1183,7 +1295,7 @@ function renderDistrictData(districtKey) {
 
   const max = Math.max(...data.clusters.map((c) => c.artisans));
   $('cluster-evidence-list').innerHTML = data.clusters.map((c, i) => `
-    <button class="inset p-4 w-full text-left block hover:border-white/30 transition" onclick="focusCluster(${i})">
+    <button class="inset p-4 w-full text-left block hover:bg-[#ffd98a] transition" onclick="focusCluster(${i})">
       <div class="flex justify-between gap-3 font-bold text-sm">
         <span>${esc(c.name)}</span>
         <span class="${c.isVoid ? 'text-rose' : 'text-em'} mono whitespace-nowrap">${c.artisans}</span>
@@ -1222,6 +1334,8 @@ function renderGIAProposal() {
   setText('gia-total', `₹${(t.budget / 100000).toFixed(1)} L`);
   setText('gia-per-head', t.voidArtisans ? `${inr(t.budget / t.voidArtisans)} per unserved artisan, all-in` : 'No reachability voids in this district.');
 
+  const hist = getHistory();
+  const fieldEvidence = hist.length ? `<p><b>Field evidence.</b> ${hist.length} beneficiar${hist.length === 1 ? 'y has' : 'ies have'} been assessed at kiosks in room ${esc(HunarSync.info().room)}; ${hist.filter((e) => !e.reachable).length} fall outside a one-day commute.</p>` : '';
   const row = (c) => `<tr><td style="padding:5px 6px;border-bottom:1px solid #eee">${esc(c.name)}</td><td style="padding:5px 6px;border-bottom:1px solid #eee">${esc(c.trade)}</td><td style="padding:5px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700">${c.artisans}</td></tr>`;
   $('gia-paper').innerHTML = `
     <div style="text-align:center;border-bottom:2px solid #0F382A;padding-bottom:10px;margin-bottom:12px">
@@ -1234,6 +1348,7 @@ function renderGIAProposal() {
       <tr style="background:#F5F2EB"><th style="padding:5px 6px;text-align:left">Unserved cluster</th><th style="padding:5px 6px;text-align:left">Trade</th><th style="padding:5px 6px;text-align:right">Artisans</th></tr>
       ${t.voids.map(row).join('') || '<tr><td colspan="3" style="padding:8px 6px;color:#7F756B">None</td></tr>'}
     </table>
+    ${fieldEvidence}
     <p><b>Proposed action.</b> Sanction one mobile RPL and practical testing van to assess these artisans in their own villages.</p>
     <table style="width:100%;border-collapse:collapse;margin:10px 0;font-size:11px">
       <tr><td style="padding:4px 6px">Assessment and certification (${t.voidArtisans} × ${inr(per)})</td><td style="padding:4px 6px;text-align:right">${inr(t.voidArtisans * per)}</td></tr>
@@ -1378,6 +1493,7 @@ function cmdkActions() {
     ...Object.entries(DISTRICT_DATASETS).map(([k, d]) => ({ icon: 'map-pin', label: `Map: ${d.short} district`, run: () => { switchView('dashboard'); setTimeout(() => changeDistrictData(k), 200); } })),
     { icon: 'file-text', label: 'Draft GIA proposal for current district', run: generateGIAProposalPDF },
     { icon: 'download', label: 'Export intake register as CSV', run: exportHistoryCSV },
+    { icon: 'refresh-cw', label: 'Sync now / open sync settings', run: () => { HunarSync.syncNow(); openSyncModal(); } },
     { icon: 'calculator', label: 'Open wage-loss calculator', run: () => $('calculator').scrollIntoView({ behavior: 'smooth' }) }
   ];
 }
@@ -1386,7 +1502,7 @@ function initCmdk() {
   document.addEventListener('keydown', (e) => {
     const open = !$('cmdk').classList.contains('hidden');
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); open ? closeCmdk() : openCmdk(); return; }
-    if (e.key === 'Escape') { closeCmdk(); closeNQRDetailModal(); closePrintModal(); closeGIAModal(); return; }
+    if (e.key === 'Escape') { closeCmdk(); closeNQRDetailModal(); closePrintModal(); closeGIAModal(); closeSyncModal(); return; }
     if (!open) return;
     if (e.key === 'ArrowDown') { e.preventDefault(); cmdkSel = Math.min(cmdkItems.length - 1, cmdkSel + 1); paintCmdk(); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkSel = Math.max(0, cmdkSel - 1); paintCmdk(); }

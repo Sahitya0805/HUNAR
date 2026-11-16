@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HUNAR (हुनर) — Voice-Driven Rural Skill Certification</title>
-  <meta name="description" content="Speak your work in your own dialect. HUNAR matches it to an NCVET qualification, finds an assessment centre within a one-day commute, and maps unserved clusters for PM-AJAY grants.">
-  <meta name="theme-color" content="#050b08">
+  <meta name="description" content="Speak your work in your own dialect. HUNAR matches it to an NCVET qualification, finds a centre within a one-day commute, and syncs every kiosk so unserved clusters become fundable PM-AJAY proposals.">
+  <meta name="theme-color" content="#ffa30f">
   <link rel="icon" type="image/svg+xml" href="hunar-logo.svg">
+  <link rel="manifest" href="manifest.webmanifest">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;600;800&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Kalam:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -33,21 +34,18 @@
     <a href="#top" class="flex items-center gap-3">
       <div class="logo-badge">
         <svg class="logo-orbit" viewBox="0 0 100 100" fill="none">
-          <circle cx="50" cy="50" r="44" stroke="#f0b93a" stroke-width="2" stroke-dasharray="6 8" opacity="0.9"/>
-          <circle cx="50" cy="6" r="3.5" fill="#fde68a"/>
+          <circle cx="50" cy="50" r="44" stroke="#ffa30f" stroke-width="3" stroke-dasharray="6 8"/>
+          <circle cx="50" cy="6" r="4" fill="#fff3d6"/>
         </svg>
         <svg viewBox="0 0 24 24" fill="none" class="relative w-5 h-5">
-          <path d="M12 21V10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M12 10C12 5.5 16 3 19 3C19 6.5 16.5 10.5 12 10Z" fill="#fde68a" stroke="#fff" stroke-width="1.2"/>
-          <path d="M12 14C12 10.5 8.5 8.5 6 8.5C6 11.5 8 14.5 12 14Z" fill="#34d399" stroke="#fff" stroke-width="1.2"/>
+          <path d="M12 21V10" stroke="#fffaf0" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 10C12 5.5 16 3 19 3C19 6.5 16.5 10.5 12 10Z" fill="#ffa30f" stroke="#fffaf0" stroke-width="1.2"/>
+          <path d="M12 14C12 10.5 8.5 8.5 6 8.5C6 11.5 8 14.5 12 14Z" fill="#bfe8cf" stroke="#fffaf0" stroke-width="1.2"/>
         </svg>
       </div>
       <div class="leading-tight">
-        <div class="flex items-center gap-2">
-          <span class="font-display font-extrabold text-lg tracking-tight">HUNAR</span>
-          <span class="deva text-em font-bold">हुनर</span>
-        </div>
-        <div class="text-[10.5px] text-mut font-semibold tracking-wide">PM-AJAY · Direct RPL Portal</div>
+        <div class="flex items-center gap-2"><span class="font-display text-xl">HUNAR</span><span class="deva font-bold" style="color:var(--verm)">हुनर</span></div>
+        <div class="text-[11px] font-semibold text-mut hide-xs">PM-AJAY · Direct RPL Portal</div>
       </div>
     </a>
 
@@ -59,129 +57,126 @@
     </nav>
 
     <div class="flex items-center gap-2">
-      <button class="btn btn-ghost btn-sm hidden sm:inline-flex" onclick="openCmdk()" title="Command palette">
-        <i data-lucide="search" class="w-4 h-4"></i><kbd>⌘K</kbd>
+      <button id="sync-pill" class="sync-pill" data-state="connecting" onclick="openSyncModal()" title="Sync status">
+        <span class="sdot"></span><span id="sync-pill-text">Connecting</span>
       </button>
-      <a href="#console" class="btn btn-primary btn-sm"><i data-lucide="mic" class="w-4 h-4"></i>Open console</a>
+      <button class="btn btn-ghost btn-sm hidden md:inline-flex" onclick="openCmdk()" title="Command palette"><i data-lucide="search" class="w-4 h-4"></i><kbd>⌘K</kbd></button>
+      <a href="#console" class="btn btn-primary btn-sm"><i data-lucide="mic" class="w-4 h-4"></i><span class="hide-xs">Console</span></a>
     </div>
   </header>
 
   <!-- ================================================================== HERO -->
   <section id="top" class="hero">
     <div class="max-w-7xl w-full mx-auto px-5 sm:px-8">
-      <div class="max-w-2xl">
+      <div class="max-w-3xl note-wrap">
         <div class="eyebrow fade-up" style="--d:.05s">Smart India Hackathon 2026 · PS 26097</div>
-        <h1 class="hero-title mt-5" aria-label="HUNAR">
-          <span style="--i:0">H</span><span style="--i:1">U</span><span style="--i:2">N</span><span style="--i:3">A</span><span style="--i:4">R</span>
-        </h1>
-        <div class="hero-deva deva">हुनर</div>
-        <p class="mt-5 text-lg sm:text-xl text-mut leading-relaxed max-w-xl fade-up" style="--d:.9s">
-          Speak your work in your own dialect. Walk out with a
-          <b class="text-ink">national skill certificate in 2 days</b>, not 6 months, from a centre you can reach and return from the same day.
+        <h1 class="hero-title mt-4" aria-label="HUNAR"><span style="--i:0">H</span><span style="--i:1">U</span><span style="--i:2">N</span><span style="--i:3">A</span><span style="--i:4">R</span></h1>
+        <div class="hero-deva font-display deva">हुनर</div>
+
+        <p class="mt-8 text-xl sm:text-2xl leading-snug max-w-xl fade-up font-medium" style="--d:.9s">
+          Speak your work in your own dialect. Walk out with a national certificate in
+          <span class="hl font-bold">2 days</span>, not 6 months, from a centre you can reach and <span class="scribble">return from the same day</span>.
         </p>
-        <div class="mt-8 flex flex-wrap gap-3 fade-up" style="--d:1.05s">
-          <a href="#console" class="btn btn-primary"><i data-lucide="mic" class="w-4 h-4"></i>Start voice intake</a>
-          <button class="btn btn-ghost" onclick="runGuidedDemo()"><i data-lucide="play" class="w-4 h-4"></i>Watch a 10-second demo</button>
+
+        <div class="mt-9 flex flex-wrap gap-4 fade-up items-center" style="--d:1.05s">
+          <a href="#console" class="btn btn-primary !text-lg !px-6 !py-3"><i data-lucide="mic" class="w-5 h-5"></i>Start voice intake</a>
+          <button class="btn btn-ghost !text-lg !px-6 !py-3" onclick="runGuidedDemo()"><i data-lucide="play" class="w-5 h-5"></i>10-second demo</button>
+          <span class="hand font-bold text-xl hidden sm:inline-block" style="color:var(--verm);transform:rotate(-4deg)">← try it, no typing!</span>
         </div>
 
-        <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 fade-up" style="--d:1.2s">
-          <div><div class="stat-num text-em"><span data-count="150">0</span>M+</div><div class="text-xs text-mut mt-2 font-semibold">informal artisans</div></div>
-          <div><div class="stat-num text-rose"><span data-count="92">0</span>%</div><div class="text-xs text-mut mt-2 font-semibold">hold no certificate</div></div>
-          <div><div class="stat-num text-gold"><span data-count="2">0</span> days</div><div class="text-xs text-mut mt-2 font-semibold">to certification</div></div>
-          <div><div class="stat-num">₹<span data-count="0">0</span></div><div class="text-xs text-mut mt-2 font-semibold">wages forfeited</div></div>
+        <div class="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-6 fade-up" style="--d:1.2s">
+          <div><div class="stat-num" style="color:var(--leaf)"><span data-count="150">0</span>M+</div><div class="text-sm mt-2 font-bold text-mut">informal artisans</div></div>
+          <div><div class="stat-num" style="color:var(--verm)"><span data-count="92">0</span>%</div><div class="text-sm mt-2 font-bold text-mut">hold no certificate</div></div>
+          <div><div class="stat-num" style="color:var(--indigo)"><span data-count="2">0</span> days</div><div class="text-sm mt-2 font-bold text-mut">to certification</div></div>
+          <div><div class="stat-num">₹<span data-count="0">0</span></div><div class="text-sm mt-2 font-bold text-mut">wages forfeited</div></div>
         </div>
       </div>
     </div>
-    <a href="#impact" class="scroll-cue"><i></i>Scroll</a>
+
+    <div class="sticker absolute right-[4%] top-[17%] hidden sm:grid"><i></i><div><div class="text-3xl">100%</div><div class="text-lg">FREE</div><div class="text-[11px] mt-1 hand font-bold">PM-AJAY GIA</div></div></div>
+    <div class="note hidden lg:block" style="right:3%;bottom:7%;transform:rotate(5deg);width:190px">
+      this orb listens to your mic and reacts to your voice!
+      <svg width="70" height="46" viewBox="0 0 70 46" fill="none" style="margin:6px 0 0 70px"><path d="M4 4 C30 6 48 16 56 38" stroke="#e8412c" stroke-width="3" stroke-linecap="round"/><path d="M44 32 L57 41 L58 26" stroke="#e8412c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <a href="#impact" class="scroll-cue"><i></i>scroll</a>
   </section>
 
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track" id="marquee-track"></div>
-  </div>
+  <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee-track"></div></div>
 
   <!-- ================================================================== IMPACT -->
   <section id="impact" class="section">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       <div class="reveal max-w-3xl">
-        <div class="eyebrow">The rural certification paradox</div>
-        <h2 class="section-title mt-4">A 6-month course costs a daily-wage earner <span class="grad-text">₹54,000 they do not have.</span></h2>
-        <p class="mt-5 text-mut text-lg leading-relaxed">Classroom schemes ask experienced artisans to stop earning in order to prove what they already know. HUNAR certifies the skill they have, where they live.</p>
+        <div class="eyebrow">the rural certification paradox</div>
+        <h2 class="section-title mt-3">A 6-month course costs a daily-wage earner <span class="hl">₹54,000</span> they do not have.</h2>
+        <p class="mt-5 text-xl text-mut leading-relaxed">Classroom schemes ask experienced artisans to stop earning in order to prove what they already know. HUNAR certifies the skill they have, where they live.</p>
       </div>
-      <div id="kpi-grid" class="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <div id="kpi-grid" class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </div>
   </section>
 
   <!-- ================================================================== HOW -->
-  <section id="how" class="section" style="padding-top:40px">
+  <section id="how" class="section band" style="border-block:3px solid var(--ink);background-color:var(--paper-2)">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       <div class="reveal max-w-3xl">
-        <div class="eyebrow">How it works</div>
-        <h2 class="section-title mt-4">Four steps. <span class="grad-text">No forms, no typing.</span></h2>
+        <div class="eyebrow">how it works</div>
+        <h2 class="section-title mt-3">Four steps. <span class="scribble">No forms, no typing.</span></h2>
       </div>
-      <div class="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="glass p-6 reveal" data-tilt style="--d:0s">
+      <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="glass tape p-6 reveal tilt-l" data-tilt style="--d:0s">
           <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="mic"></i></div><div class="step-num">01</div></div>
-          <h3 class="font-display font-bold text-xl mt-6 pop">Speak</h3>
-          <p class="text-mut text-sm mt-2 leading-relaxed">The artisan describes their work at the village CSC kiosk in Hindi, Bundelkhandi, Marathi, Tamil or Telugu.</p>
+          <h3 class="font-display text-2xl mt-6 pop">Speak</h3>
+          <p class="text-mut mt-2 leading-relaxed">The artisan describes their work at the village CSC kiosk in Hindi, Bundelkhandi, Marathi, Tamil or Telugu.</p>
         </div>
-        <div class="glass p-6 reveal" data-tilt style="--d:.1s">
-          <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="scan-search"></i></div><div class="step-num">02</div></div>
-          <h3 class="font-display font-bold text-xl mt-6 pop">Match</h3>
-          <p class="text-mut text-sm mt-2 leading-relaxed">A deterministic engine scores the narrative against the qualification register and shows exactly which words matched.</p>
+        <div class="glass tape tape-r p-6 reveal tilt-r" data-tilt style="--d:.1s">
+          <div class="flex items-start justify-between pop-sm"><div class="step-icon" style="background:var(--pink)"><i data-lucide="scan-search"></i></div><div class="step-num">02</div></div>
+          <h3 class="font-display text-2xl mt-6 pop">Match</h3>
+          <p class="text-mut mt-2 leading-relaxed">A deterministic engine scores the narrative against the register and shows exactly which words matched.</p>
         </div>
-        <div class="glass p-6 reveal" data-tilt style="--d:.2s">
-          <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="route"></i></div><div class="step-num">03</div></div>
-          <h3 class="font-display font-bold text-xl mt-6 pop">Route</h3>
-          <p class="text-mut text-sm mt-2 leading-relaxed">Only centres inside a one-day commute are recommended. Anything further is flagged as a reachability void.</p>
+        <div class="glass tape p-6 reveal tilt-l2" data-tilt style="--d:.2s">
+          <div class="flex items-start justify-between pop-sm"><div class="step-icon" style="background:var(--leaf-lt)"><i data-lucide="route"></i></div><div class="step-num">03</div></div>
+          <h3 class="font-display text-2xl mt-6 pop">Route</h3>
+          <p class="text-mut mt-2 leading-relaxed">Only centres inside a one-day commute are recommended. Anything further is flagged as a reachability void.</p>
         </div>
-        <div class="glass p-6 reveal" data-tilt style="--d:.3s">
-          <div class="flex items-start justify-between pop-sm"><div class="step-icon"><i data-lucide="award"></i></div><div class="step-num">04</div></div>
-          <h3 class="font-display font-bold text-xl mt-6 pop">Certify</h3>
-          <p class="text-mut text-sm mt-2 leading-relaxed">A printed action slip, a 12–16 hour practical assessment, and voids aggregated into a fundable mobile-van proposal.</p>
+        <div class="glass tape tape-r p-6 reveal tilt-r2" data-tilt style="--d:.3s">
+          <div class="flex items-start justify-between pop-sm"><div class="step-icon" style="background:var(--indigo-lt)"><i data-lucide="refresh-cw"></i></div><div class="step-num">04</div></div>
+          <h3 class="font-display text-2xl mt-6 pop">Sync</h3>
+          <p class="text-mut mt-2 leading-relaxed">Every intake is saved offline, then replicated to all kiosks in the block. Voids add up into a fundable van proposal.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ================================================================== CALCULATOR -->
-  <section id="calculator" class="section" style="padding-top:40px">
+  <section id="calculator" class="section">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
-      <div class="glass p-6 sm:p-10 reveal">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div class="glass shadow-indigo p-6 sm:p-10 reveal tape">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <div class="eyebrow">Wage-loss calculator</div>
-            <h2 class="section-title mt-4" style="font-size:clamp(28px,3.4vw,44px)">What does certification really cost a worker?</h2>
-            <div class="mt-8 space-y-7">
-              <div>
-                <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Daily wage</span><span class="mono text-em" id="calc-wage-val">₹500</span></div>
-                <input type="range" id="calc-wage" min="300" max="900" step="25" value="500" oninput="updateCalculator()">
-              </div>
-              <div>
-                <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Classroom course length</span><span class="mono text-em" id="calc-months-val">3 months</span></div>
-                <input type="range" id="calc-months" min="3" max="6" step="1" value="3" oninput="updateCalculator()">
-              </div>
-              <div>
-                <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Current monthly income</span><span class="mono text-em" id="calc-income-val">₹9,500</span></div>
-                <input type="range" id="calc-income" min="6000" max="16000" step="500" value="9500" oninput="updateCalculator()">
-              </div>
+            <div class="eyebrow">wage-loss calculator</div>
+            <h2 class="section-title mt-3" style="font-size:clamp(30px,3.6vw,46px)">What does certification really cost a worker?</h2>
+            <div class="mt-9 space-y-8">
+              <div><div class="flex justify-between font-bold mb-3"><span>Daily wage</span><span class="mono" id="calc-wage-val" style="color:var(--verm)">₹500</span></div><input type="range" id="calc-wage" min="300" max="900" step="25" value="500" oninput="updateCalculator()"></div>
+              <div><div class="flex justify-between font-bold mb-3"><span>Classroom course length</span><span class="mono" id="calc-months-val" style="color:var(--verm)">3 months</span></div><input type="range" id="calc-months" min="3" max="6" step="1" value="3" oninput="updateCalculator()"></div>
+              <div><div class="flex justify-between font-bold mb-3"><span>Current monthly income</span><span class="mono" id="calc-income-val" style="color:var(--verm)">₹9,500</span></div><input type="range" id="calc-income" min="6000" max="16000" step="500" value="9500" oninput="updateCalculator()"></div>
             </div>
           </div>
-          <div class="space-y-4">
-            <div class="inset p-5">
-              <div class="flex items-center justify-between"><span class="text-sm font-bold text-mut">Traditional classroom route</span><span class="chip chip-rose" id="calc-trad-days">90 days</span></div>
-              <div class="stat-num text-rose mt-3" id="calc-trad-loss">−₹45,000</div>
-              <div class="text-xs text-mut mt-1">wages forfeited while attending</div>
+          <div class="space-y-5">
+            <div class="inset p-5" style="transform:rotate(-.8deg)">
+              <div class="flex items-center justify-between"><span class="font-bold">Traditional classroom route</span><span class="chip chip-rose" id="calc-trad-days">90 days</span></div>
+              <div class="stat-num mt-3 text-rose" id="calc-trad-loss">−₹45,000</div>
+              <div class="text-sm text-mut mt-1">wages forfeited while attending</div>
               <div class="kpi-bar go mt-4"><i class="bar-before" id="calc-trad-bar" style="--w:100%"></i></div>
             </div>
-            <div class="inset p-5" style="border-color:rgba(52,211,153,.4)">
-              <div class="flex items-center justify-between"><span class="text-sm font-bold text-mut">HUNAR direct RPL</span><span class="chip chip-em">2 days</span></div>
-              <div class="stat-num text-em mt-3" id="calc-hunar-loss">+₹500</div>
-              <div class="text-xs text-mut mt-1" id="calc-hunar-note">wages protected, plus ₹500 DBT allowance</div>
+            <div class="inset p-5" style="transform:rotate(.7deg);background:var(--leaf-lt)">
+              <div class="flex items-center justify-between"><span class="font-bold">HUNAR direct RPL</span><span class="chip chip-em" style="background:var(--cream)">2 days</span></div>
+              <div class="stat-num mt-3 text-em" id="calc-hunar-loss">+₹500</div>
+              <div class="text-sm text-mut mt-1" id="calc-hunar-note"></div>
               <div class="kpi-bar go mt-4"><i class="bar-after" id="calc-hunar-bar" style="--w:3%"></i></div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="inset p-4"><div class="text-xs text-mut font-bold">Income after certification</div><div class="font-display font-extrabold text-2xl mt-1 text-gold" id="calc-new-income">₹14,200</div><div class="text-[11px] text-dim mt-1">+49.5% average uplift</div></div>
-              <div class="inset p-4"><div class="text-xs text-mut font-bold">Extra earned in year one</div><div class="font-display font-extrabold text-2xl mt-1 text-gold" id="calc-year-gain">₹56,400</div><div class="text-[11px] text-dim mt-1">vs. staying uncertified</div></div>
+            <div class="grid grid-cols-2 gap-5">
+              <div class="inset p-4" style="background:var(--marigold-lt)"><div class="text-sm font-bold text-mut">Income after certification</div><div class="font-display text-3xl mt-1" id="calc-new-income">₹14,200</div><div class="text-xs text-mut mt-1">+49.5% average uplift</div></div>
+              <div class="inset p-4" style="background:var(--indigo-lt)"><div class="text-sm font-bold text-mut">Extra earned in year one</div><div class="font-display text-3xl mt-1" id="calc-year-gain">₹56,400</div><div class="text-xs text-mut mt-1">vs. staying uncertified</div></div>
             </div>
           </div>
         </div>
@@ -190,59 +185,53 @@
   </section>
 
   <!-- ================================================================== CONSOLE -->
-  <section id="console" class="section" style="padding-top:40px">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 space-y-6">
+  <section id="console" class="section band" style="border-top:3px solid var(--ink);background-color:var(--paper-2)">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 space-y-8">
 
       <div class="reveal flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div class="eyebrow">Live console</div>
-          <h2 class="section-title mt-4">Try the <span class="grad-text">kiosk.</span></h2>
+          <div class="eyebrow">live console</div>
+          <h2 class="section-title mt-3">Try the <span class="hl">kiosk.</span></h2>
+          <button onclick="openSyncModal()" class="mt-4 chip" style="cursor:pointer;box-shadow:2px 2px 0 var(--ink)"><i data-lucide="radio-tower" class="w-3.5 h-3.5"></i><span id="sync-room-label">room</span><span class="text-mut">· synced across kiosks</span></button>
         </div>
         <div class="glass tabs">
           <button id="nav-kiosk-btn" onclick="switchView('kiosk')" class="nav-tab active"><i data-lucide="mic" class="w-4 h-4"></i>Voice desk</button>
-          <button id="nav-samples-btn" onclick="switchView('samples')" class="nav-tab"><i data-lucide="users" class="w-4 h-4"></i>Demo profiles</button>
+          <button id="nav-samples-btn" onclick="switchView('samples')" class="nav-tab"><i data-lucide="users" class="w-4 h-4"></i>Profiles</button>
           <button id="nav-dashboard-btn" onclick="switchView('dashboard')" class="nav-tab"><i data-lucide="map" class="w-4 h-4"></i>District map</button>
           <button id="nav-nqr-btn" onclick="switchView('nqr')" class="nav-tab"><i data-lucide="book-open" class="w-4 h-4"></i>Registry</button>
-          <button id="nav-history-btn" onclick="switchView('history')" class="nav-tab"><i data-lucide="clipboard-list" class="w-4 h-4"></i>Intake register <span id="hist-count" class="mono text-[11px] opacity-80"></span></button>
+          <button id="nav-history-btn" onclick="switchView('history')" class="nav-tab"><i data-lucide="clipboard-list" class="w-4 h-4"></i>Intake register <span id="hist-count" class="mono text-xs"></span></button>
         </div>
       </div>
 
       <!-- TOAST -->
-      <div id="eval-toast" class="glass glass-solid p-4 flex items-center gap-3">
-        <div class="step-icon" style="width:38px;height:38px;border-radius:12px"><i data-lucide="check" class="w-5 h-5"></i></div>
-        <div class="text-sm">
+      <div id="eval-toast" class="glass p-4 flex items-center gap-3">
+        <div class="step-icon" style="width:40px;height:40px;border-radius:12px"><i data-lucide="check" class="w-5 h-5"></i></div>
+        <div>
           <div class="font-bold" id="eval-toast-title">Qualification evaluated</div>
-          <div class="text-mut text-xs mt-0.5" id="eval-toast-desc"></div>
+          <div class="text-mut text-sm mt-0.5" id="eval-toast-desc"></div>
         </div>
-        <button onclick="dismissEvalToast()" class="text-mut hover:text-white p-1 ml-auto" aria-label="Dismiss"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button onclick="dismissEvalToast()" class="p-1 ml-auto" aria-label="Dismiss"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
 
       <!-- ============================ VIEW 1: VOICE DESK -->
       <div id="view-kiosk">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           <div class="lg:col-span-7 glass p-6 sm:p-7 space-y-6">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h3 class="font-display font-bold text-xl">Beneficiary intake</h3>
-                <p class="text-sm text-mut">Record the work narrative in the local dialect, or type it.</p>
+                <h3 class="font-display text-2xl">Beneficiary intake</h3>
+                <p class="text-mut">Record the work narrative in the local dialect, or type it.</p>
               </div>
               <span class="chip"><span id="mic-status-dot" class="dot"></span><span id="mic-status-text">Microphone ready</span></span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label class="label" for="input-beneficiary-name">Beneficiary name</label>
-                <input type="text" id="input-beneficiary-name" oninput="syncBeneficiaryData()" placeholder="e.g. Chhedilal Verma" class="field">
-              </div>
-              <div>
-                <label class="label" for="input-beneficiary-loc">Village / district</label>
-                <input type="text" id="input-beneficiary-loc" oninput="syncBeneficiaryData()" placeholder="e.g. Tindwari, Banda (UP)" class="field">
-              </div>
-              <div>
-                <label class="label" for="dialect-selector">Dialect</label>
+              <div><label class="label" for="input-beneficiary-name">Beneficiary name</label><input type="text" id="input-beneficiary-name" oninput="syncBeneficiaryData()" placeholder="e.g. Chhedilal Verma" class="field"></div>
+              <div><label class="label" for="input-beneficiary-loc">Village / district</label><input type="text" id="input-beneficiary-loc" oninput="syncBeneficiaryData()" placeholder="e.g. Tindwari, Banda" class="field"></div>
+              <div><label class="label" for="dialect-selector">Dialect</label>
                 <select id="dialect-selector" onchange="updateRecognitionLanguage(this.value)" class="field">
-                  <option value="hi-IN" selected>Hindi / Bundelkhandi (हिंदी)</option>
+                  <option value="hi-IN" selected>Hindi / Bundelkhandi</option>
                   <option value="mr-IN">Marathi (मराठी)</option>
                   <option value="ta-IN">Tamil (தமிழ்)</option>
                   <option value="te-IN">Telugu (తెలుగు)</option>
@@ -252,16 +241,14 @@
             </div>
 
             <div id="viz-box" class="viz-box space-y-4">
-              <div class="flex items-center justify-between text-xs text-mut">
-                <span class="flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4 text-em"></i>Live microphone spectrum</span>
-                <span id="audio-rate-text" class="mono">analyser idle</span>
+              <div class="flex items-center justify-between text-sm text-mut">
+                <span class="flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i>Live microphone spectrum</span>
+                <span id="audio-rate-text" class="mono text-xs">analyser idle</span>
               </div>
               <canvas id="waveform-canvas"></canvas>
               <div class="flex flex-wrap items-center gap-4">
-                <button id="record-btn" onclick="toggleVoiceRecording()" class="btn btn-primary mic-btn">
-                  <i data-lucide="mic" class="w-4 h-4"></i><span id="mic-text">Start microphone</span>
-                </button>
-                <span id="listening-hint" class="text-xs text-mut flex-1 min-w-[180px]">Press and speak. The 3D orb listens with you.</span>
+                <button id="record-btn" onclick="toggleVoiceRecording()" class="btn btn-primary mic-btn"><i data-lucide="mic" class="w-4 h-4"></i><span id="mic-text">Start microphone</span></button>
+                <span id="listening-hint" class="text-sm text-mut flex-1 min-w-[180px]">Press and speak. The 3D orb listens with you.</span>
               </div>
             </div>
 
@@ -271,27 +258,23 @@
                 <span class="chip mono">match: <b id="conf-val" class="text-mut">awaiting input</b></span>
               </div>
               <div class="relative">
-                <textarea id="transcript-input" oninput="executeDynamicAnalysis()" rows="3" class="field deva !font-medium leading-relaxed" placeholder="Start the microphone, or type the artisan's experience here…"></textarea>
+                <textarea id="transcript-input" oninput="executeDynamicAnalysis()" rows="3" class="field deva leading-relaxed" placeholder="Start the microphone, or type the artisan's experience here…"></textarea>
                 <button onclick="speakCurrentText()" title="Read the text aloud" class="absolute right-3 bottom-3 btn btn-ghost btn-sm !p-2"><i data-lucide="volume-2" class="w-4 h-4"></i></button>
               </div>
-              <div id="transcript-highlight" class="hidden mt-3 text-sm deva leading-relaxed text-mut inset p-3"></div>
-              <div class="flex flex-wrap items-center gap-2 mt-3">
-                <span class="text-xs text-dim font-semibold">Try:</span>
+              <div id="transcript-highlight" class="hidden mt-3 deva leading-relaxed inset p-3"></div>
+              <div class="flex flex-wrap items-center gap-2 mt-4">
+                <span class="hand font-bold text-lg" style="color:var(--verm)">try:</span>
                 <button onclick="selectProfileAndSwitch('agro_mill')" class="chip">🌾 Pulse &amp; spice mill</button>
                 <button onclick="selectProfileAndSwitch('solar_pump')" class="chip">⚡ Solar agri-pump</button>
                 <button onclick="selectProfileAndSwitch('rural_mason')" class="chip">🧱 Rural mason</button>
                 <button onclick="selectProfileAndSwitch('leather')" class="chip">👞 Leather (void case)</button>
-                <button onclick="clearDesk()" class="chip">Clear</button>
+                <button onclick="clearDesk()" class="chip">clear</button>
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="label" for="input-extracted-exp">Extracted experience</label>
-                <input type="text" id="input-extracted-exp" oninput="syncBeneficiaryData()" placeholder="Detected from speech, or enter years" class="field">
-              </div>
-              <div>
-                <label class="label" for="user-max-distance">Maximum one-day commute</label>
+              <div><label class="label" for="input-extracted-exp">Extracted experience</label><input type="text" id="input-extracted-exp" oninput="syncBeneficiaryData()" placeholder="Detected from speech, or enter years" class="field"></div>
+              <div><label class="label" for="user-max-distance">Maximum one-day commute</label>
                 <select id="user-max-distance" onchange="executeDynamicAnalysis()" class="field">
                   <option value="15">15 km (cycle / e-rickshaw)</option>
                   <option value="25" selected>25 km (one-day return bus)</option>
@@ -300,123 +283,97 @@
               </div>
             </div>
 
-            <button id="evaluate-match-btn" onclick="handleEvaluateButtonClick()" class="btn btn-primary btn-block !py-4 !text-base">
-              <i data-lucide="check-circle" class="w-5 h-5"></i><span>Evaluate qualification match</span>
-            </button>
+            <button id="evaluate-match-btn" onclick="handleEvaluateButtonClick()" class="btn btn-primary btn-block !py-4 !text-xl"><i data-lucide="check-circle" class="w-5 h-5"></i><span>Evaluate qualification match</span></button>
           </div>
 
           <div class="lg:col-span-5">
-            <div id="rpl-main-card" class="glass p-6 sm:p-7 space-y-5">
+            <div id="rpl-main-card" class="glass p-6 sm:p-7 space-y-6 tilt-r">
               <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-display font-bold text-xl">Qualification match</h3>
-                  <p class="text-sm text-mut">Register standard and assessment pathway</p>
-                </div>
+                <div><h3 class="font-display text-2xl">Qualification match</h3><p class="text-mut">Register standard and pathway</p></div>
                 <span id="rpl-nsqf" class="hidden chip chip-gold mono">Level 4</span>
               </div>
 
               <div id="rpl-empty-state" class="inset py-12 px-5 text-center" style="border-style:dashed">
                 <div class="step-icon mx-auto"><i data-lucide="mic"></i></div>
-                <h4 class="font-display font-bold text-lg mt-4">Awaiting intake</h4>
-                <p class="text-sm text-mut mt-2 max-w-xs mx-auto leading-relaxed">Speak or type the artisan's experience. The match, the centre and the commute check appear here.</p>
+                <h4 class="font-display text-xl mt-4">Awaiting intake</h4>
+                <p class="text-mut mt-2 max-w-xs mx-auto leading-relaxed">Speak or type the artisan's experience. The match, the centre and the commute check appear here.</p>
               </div>
 
-              <div id="rpl-unmatched-state" class="hidden inset py-7 px-5 text-center" style="border-color:rgba(240,185,58,.45)">
-                <div class="step-icon mx-auto" style="color:var(--gold);border-color:rgba(240,185,58,.45);background:rgba(240,185,58,.12);box-shadow:none"><i data-lucide="help-circle"></i></div>
-                <h4 class="font-display font-bold text-lg mt-4">No trade matched yet</h4>
-                <p class="text-sm text-mut mt-2 max-w-xs mx-auto leading-relaxed">
-                  "<span id="unmatched-sample-text" class="text-gold font-bold"></span>" has no recognised trade words. Mention the work itself, for example:
-                </p>
+              <div id="rpl-unmatched-state" class="hidden inset py-7 px-5 text-center" style="background:var(--marigold-lt)">
+                <div class="step-icon mx-auto" style="background:var(--cream)"><i data-lucide="help-circle"></i></div>
+                <h4 class="font-display text-xl mt-4">No trade matched yet</h4>
+                <p class="mt-2 max-w-xs mx-auto leading-relaxed">"<span id="unmatched-sample-text" class="font-bold"></span>" has no recognised trade words. Mention the work itself:</p>
                 <div class="flex flex-wrap justify-center gap-2 mt-4">
-                  <button class="chip" onclick="selectProfileAndSwitch('solar_pump')">⚡ Solar pump repair</button>
-                  <button class="chip" onclick="selectProfileAndSwitch('agro_mill')">🌾 Grain &amp; spice mill</button>
+                  <button class="chip" onclick="selectProfileAndSwitch('solar_pump')">⚡ Solar pump</button>
+                  <button class="chip" onclick="selectProfileAndSwitch('agro_mill')">🌾 Grain mill</button>
                   <button class="chip" onclick="selectProfileAndSwitch('rural_mason')">🧱 Masonry</button>
                 </div>
               </div>
 
-              <div id="rpl-result-card" class="hidden space-y-5">
-
-                <!-- SKILL PASSPORT -->
+              <div id="rpl-result-card" class="hidden space-y-6">
                 <div id="passport" class="passport" onclick="this.classList.toggle('flipped')" title="Click to flip">
                   <div class="passport-inner">
                     <div class="passport-face">
-                      <div class="flex items-start justify-between gap-3">
+                      <div class="flex items-start justify-between gap-3 mt-3">
                         <div>
-                          <div class="text-[10px] font-bold tracking-[.2em] uppercase text-gold">Skill passport · PM-AJAY GIA</div>
-                          <div id="rpl-category" class="text-xs text-mut font-semibold mt-1"></div>
+                          <div class="font-bold text-xs tracking-[.2em] uppercase" style="color:var(--indigo)">Skill passport · PM-AJAY GIA</div>
+                          <div id="rpl-category" class="text-sm text-mut font-semibold mt-1"></div>
                         </div>
-                        <div class="level-badge"><div class="text-center"><div class="text-[8px] tracking-widest">NSQF</div><div id="pp-level" class="text-xl">4</div></div></div>
+                        <div class="level-badge"><div class="text-center"><div class="text-[9px] tracking-widest">NSQF</div><div id="pp-level" class="text-2xl">4</div></div></div>
                       </div>
-                      <h4 id="rpl-title" class="font-display font-extrabold text-2xl leading-tight mt-4"></h4>
-                      <p id="rpl-sector" class="text-xs text-mut mt-1"></p>
+                      <h4 id="rpl-title" class="font-display text-2xl leading-tight mt-4"></h4>
+                      <p id="rpl-sector" class="text-sm text-mut mt-1"></p>
                       <div class="grid grid-cols-2 gap-3 mt-5">
-                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Holder</div><div id="pp-name" class="font-bold text-sm mt-0.5"></div></div>
-                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">QP code</div><div id="rpl-code" class="mono font-bold text-sm mt-0.5 text-em"></div></div>
-                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Assessment</div><div id="rpl-duration" class="font-bold text-sm mt-0.5"></div></div>
-                        <div><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Token</div><div id="pp-token" class="mono font-bold text-xs mt-1"></div></div>
+                        <div><div class="text-[11px] uppercase tracking-widest text-dim font-bold">Holder</div><div id="pp-name" class="font-bold mt-0.5"></div></div>
+                        <div><div class="text-[11px] uppercase tracking-widest text-dim font-bold">QP code</div><div id="rpl-code" class="mono font-bold mt-0.5" style="color:var(--indigo)"></div></div>
+                        <div><div class="text-[11px] uppercase tracking-widest text-dim font-bold">Assessment</div><div id="rpl-duration" class="font-bold mt-0.5"></div></div>
+                        <div><div class="text-[11px] uppercase tracking-widest text-dim font-bold">Token</div><div id="pp-token" class="mono font-bold text-xs mt-1"></div></div>
                       </div>
-                      <div class="text-[10px] text-dim mt-4 flex items-center gap-1.5"><i data-lucide="rotate-3d" class="w-3.5 h-3.5"></i>Click to flip for the assessed competencies</div>
+                      <div class="stamp">VERIFIED</div>
+                      <div class="hand text-sm mt-4 text-mut font-bold">↻ flip me for the competencies</div>
                     </div>
                     <div class="passport-face passport-back">
-                      <div class="text-[10px] font-bold tracking-[.2em] uppercase text-gold">National Occupational Standards</div>
-                      <ul id="pp-nos" class="mt-3 space-y-2 text-xs leading-relaxed"></ul>
-                      <div class="mt-4 pt-3 border-t border-white/10 text-xs"><span class="text-dim">Entitlement: </span><b id="pp-stipend" class="text-gold"></b></div>
+                      <div class="font-bold text-xs tracking-[.2em] uppercase mt-3" style="color:var(--marigold)">National Occupational Standards</div>
+                      <ul id="pp-nos" class="mt-3 space-y-2 text-sm leading-relaxed"></ul>
+                      <div class="mt-4 pt-3 text-sm" style="border-top:2px dashed rgba(255,255,255,.3)"><span class="text-dim">Entitlement: </span><b id="pp-stipend" class="text-gold"></b></div>
                     </div>
                   </div>
                 </div>
 
-                <!-- CONFIDENCE + EXPLAINABILITY -->
-                <div class="inset p-4 space-y-3">
-                  <div class="flex items-center justify-between text-sm"><span class="font-bold">Match confidence</span><span id="conf-pct" class="mono font-bold text-em">0%</span></div>
+                <div class="inset p-4 space-y-4">
+                  <div class="flex items-center justify-between"><span class="font-bold">Match confidence</span><span id="conf-pct" class="mono font-bold text-em">0%</span></div>
                   <div class="meter"><i id="conf-bar"></i></div>
-                  <div>
-                    <div class="text-[11px] text-dim font-bold uppercase tracking-widest mb-2">Matched on</div>
-                    <div id="kw-chips" class="flex flex-wrap gap-1.5"></div>
-                  </div>
-                  <div id="alt-wrap">
-                    <div class="text-[11px] text-dim font-bold uppercase tracking-widest mb-2">Other candidates</div>
-                    <div id="alt-matches" class="space-y-2"></div>
-                  </div>
+                  <div><div class="hand font-bold text-lg" style="color:var(--verm)">matched on</div><div id="kw-chips" class="flex flex-wrap gap-1.5 mt-1"></div></div>
+                  <div id="alt-wrap"><div class="hand font-bold text-lg" style="color:var(--verm)">other candidates</div><div id="alt-matches" class="space-y-2 mt-1"></div></div>
                 </div>
 
-                <!-- COMMUTE -->
                 <div id="reach-box" class="inset p-4 space-y-3">
-                  <div class="flex items-center justify-between gap-3">
-                    <span class="font-bold text-sm">One-day commute</span>
-                    <span id="reach-badge" class="chip chip-em">Reachable</span>
-                  </div>
-                  <div class="meter" id="reach-meter"><i id="reach-bar"></i><span class="tick" id="reach-tick"></span></div>
-                  <div class="flex items-start gap-2 text-sm"><i data-lucide="map-pin" class="w-4 h-4 text-em mt-0.5 flex-none"></i><span><b id="rpl-center"></b></span></div>
-                  <p id="reach-desc" class="text-xs text-mut leading-relaxed"></p>
+                  <div class="flex items-center justify-between gap-3"><span class="font-bold">One-day commute</span><span id="reach-badge" class="chip chip-em">Reachable</span></div>
+                  <div class="meter mt-4" id="reach-meter"><i id="reach-bar"></i><span class="tick" id="reach-tick"></span></div>
+                  <div class="flex items-start gap-2 pt-1"><i data-lucide="map-pin" class="w-4 h-4 mt-1 flex-none" style="color:var(--verm)"></i><span><b id="rpl-center"></b></span></div>
+                  <p id="reach-desc" class="text-sm text-mut leading-relaxed"></p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-4">
                   <button onclick="openPrintModal()" class="btn btn-gold"><i data-lucide="file-down" class="w-4 h-4"></i>Action slip</button>
-                  <button onclick="speakResult()" class="btn btn-ghost"><i data-lucide="volume-2" class="w-4 h-4"></i>सुनें (Hindi)</button>
+                  <button onclick="speakResult()" class="btn btn-ghost"><i data-lucide="volume-2" class="w-4 h-4"></i>सुनें</button>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ============================ VIEW 2: DEMO PROFILES -->
-      <div id="view-samples" class="hidden space-y-6">
-        <div class="glass p-6">
-          <h3 class="font-display font-bold text-xl">Sample field intake records</h3>
-          <p class="text-sm text-mut">Illustrative beneficiaries from rural Bundelkhand. Load one to see the engine match it.</p>
-        </div>
-        <div id="profile-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <!-- ============================ VIEW 2: PROFILES -->
+      <div id="view-samples" class="hidden space-y-8">
+        <div class="glass p-6"><h3 class="font-display text-2xl">Sample field intake records</h3><p class="text-mut">Illustrative beneficiaries from rural Bundelkhand. Load one to watch the engine match it.</p></div>
+        <div id="profile-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
       </div>
 
       <!-- ============================ VIEW 3: DISTRICT MAP -->
-      <div id="view-dashboard" class="hidden space-y-6">
+      <div id="view-dashboard" class="hidden space-y-8">
         <div class="glass p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h3 class="font-display font-bold text-xl">District livelihood aggregation</h3>
-            <p class="text-sm text-mut">Clusters aggregated from CSC intake, used to justify PM-AJAY GIA proposals.</p>
-          </div>
+          <div><h3 class="font-display text-2xl">District livelihood aggregation</h3><p class="text-mut">Clusters aggregated from CSC intake, used to justify PM-AJAY GIA proposals.</p></div>
           <div class="flex flex-wrap items-center gap-3">
             <select id="district-filter-select" onchange="changeDistrictData(this.value)" class="field !w-auto">
               <option value="banda" selected>Banda (UP · Bundelkhand)</option>
@@ -428,72 +385,70 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Uncertified artisans</p><h4 class="stat-num mt-2" id="stat-total-artisans">0</h4><p class="text-xs text-em font-semibold mt-2">eligible for direct RPL</p></div>
-          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Largest cluster</p><h4 class="font-display font-extrabold text-xl mt-2 leading-tight" id="stat-top-cluster">—</h4><p class="text-xs text-mut mt-2" id="stat-top-trade"></p></div>
-          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Reachability voids</p><h4 class="stat-num mt-2 text-rose" id="stat-voids">0</h4><p class="text-xs text-rose font-semibold mt-2" id="stat-void-artisans"></p></div>
-          <div class="glass p-5" data-tilt><p class="text-xs text-mut font-bold">Mobile RPL grant justified</p><h4 class="stat-num mt-2 text-gold" id="stat-budget">₹0</h4><p class="text-xs text-mut mt-2">PM-AJAY GIA component</p></div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="glass p-5 tilt-l" data-tilt><p class="font-bold text-mut text-sm">Uncertified artisans</p><h4 class="stat-num mt-2" id="stat-total-artisans">0</h4><p class="text-sm text-em font-bold mt-2">eligible for direct RPL</p></div>
+          <div class="glass p-5 tilt-r" data-tilt><p class="font-bold text-mut text-sm">Largest cluster</p><h4 class="font-display text-xl mt-2 leading-tight" id="stat-top-cluster">—</h4><p class="text-sm text-mut mt-2" id="stat-top-trade"></p></div>
+          <div class="glass p-5 tilt-l2" data-tilt><p class="font-bold text-mut text-sm">Reachability voids</p><h4 class="stat-num mt-2 text-rose" id="stat-voids">0</h4><p class="text-sm text-rose font-bold mt-2" id="stat-void-artisans"></p></div>
+          <div class="glass p-5 tilt-r2" data-tilt><p class="font-bold text-mut text-sm">Mobile RPL grant justified</p><h4 class="stat-num mt-2" style="color:var(--indigo)" id="stat-budget">₹0</h4><p class="text-sm text-mut mt-2">PM-AJAY GIA component</p></div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div class="lg:col-span-7 glass p-4 space-y-3">
             <div class="flex items-center justify-between px-1">
-              <span class="text-sm font-bold flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-em"></i><span id="map-title-district"></span></span>
-              <span class="flex items-center gap-3 text-[11px] text-mut font-semibold"><span class="flex items-center gap-1.5"><span class="dot"></span>reachable</span><span class="flex items-center gap-1.5"><span class="dot live" style="animation:none"></span>void</span></span>
+              <span class="font-bold flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4" style="color:var(--verm)"></i><span id="map-title-district"></span></span>
+              <span class="flex items-center gap-3 text-sm font-bold"><span class="flex items-center gap-1.5"><span class="dot"></span>reachable</span><span class="flex items-center gap-1.5"><span class="dot" style="background:var(--verm)"></span>void</span></span>
             </div>
-            <div id="district-map" class="w-full h-[420px] rounded-2xl" style="z-index:1"></div>
+            <div id="district-map" class="w-full h-[430px]" style="z-index:1"></div>
           </div>
           <div class="lg:col-span-5 glass p-6 space-y-4">
-            <h4 class="font-display font-bold text-lg">Cluster ground truth</h4>
+            <h4 class="font-display text-xl">Cluster ground truth</h4>
             <div id="cluster-evidence-list" class="space-y-3"></div>
           </div>
         </div>
       </div>
 
       <!-- ============================ VIEW 4: REGISTRY -->
-      <div id="view-nqr" class="hidden space-y-6">
+      <div id="view-nqr" class="hidden space-y-8">
         <div class="glass p-6 space-y-5">
           <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-            <div>
-              <h3 class="font-display font-bold text-xl">Qualification register</h3>
-              <p class="text-sm text-mut">Every trade the engine can match, with QP code, level and the RPL assessment blueprint.</p>
-            </div>
+            <div><h3 class="font-display text-2xl">Qualification register</h3><p class="text-mut">Every trade the engine can match, with QP code, level and RPL blueprint.</p></div>
             <div class="relative w-full md:w-80">
               <input type="text" id="nqr-search-input" oninput="filterNQRInteractive()" placeholder="Search trade, QP code or skill…" class="field !pl-10">
-              <i data-lucide="search" class="w-4 h-4 text-mut absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             </div>
           </div>
-          <div id="nqr-pills" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+          <div id="nqr-pills" class="flex items-center gap-2 overflow-x-auto py-1 px-1"></div>
         </div>
-        <div id="nqr-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        <div id="nqr-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
       </div>
 
       <!-- ============================ VIEW 5: INTAKE REGISTER -->
-      <div id="view-history" class="hidden space-y-6">
+      <div id="view-history" class="hidden space-y-8">
         <div class="glass p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 class="font-display font-bold text-xl">Kiosk intake register</h3>
-            <p class="text-sm text-mut">Every evaluated beneficiary is saved on this device, so the kiosk keeps working offline.</p>
+            <h3 class="font-display text-2xl">Kiosk intake register</h3>
+            <p class="text-mut">Saved on this device first, then replicated to every kiosk in room <b id="hist-room">—</b>.</p>
           </div>
           <div class="flex flex-wrap gap-3">
-            <button onclick="exportHistoryCSV()" class="btn btn-ghost"><i data-lucide="download" class="w-4 h-4"></i>Export CSV</button>
+            <button onclick="openSyncModal()" class="btn btn-primary"><i data-lucide="refresh-cw" class="w-4 h-4"></i>Sync</button>
+            <button onclick="exportHistoryCSV()" class="btn btn-ghost"><i data-lucide="download" class="w-4 h-4"></i>CSV</button>
             <button onclick="clearHistory()" class="btn btn-ghost"><i data-lucide="trash-2" class="w-4 h-4"></i>Clear</button>
           </div>
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div class="lg:col-span-8 glass p-2 overflow-x-auto">
             <table class="tbl">
-              <thead><tr><th>Beneficiary</th><th>Matched trade</th><th>Level</th><th>Centre</th><th>Status</th><th>Token</th></tr></thead>
+              <thead><tr><th>Beneficiary</th><th>Matched trade</th><th>Level</th><th>Centre</th><th>Status</th><th>Kiosk</th><th></th></tr></thead>
               <tbody id="history-body"></tbody>
             </table>
-            <div id="history-empty" class="text-center py-14 text-mut text-sm">No intakes yet. Evaluate a beneficiary on the voice desk and it lands here.</div>
+            <div id="history-empty" class="text-center py-14 text-mut">No intakes yet. Evaluate a beneficiary on the voice desk and it lands here, on every synced kiosk.</div>
           </div>
-          <div class="lg:col-span-4 glass p-6 space-y-4">
-            <h4 class="font-display font-bold text-lg">Demand by trade</h4>
+          <div class="lg:col-span-4 glass p-6 space-y-5 tilt-r">
+            <h4 class="font-display text-xl">Demand by trade</h4>
             <div id="history-bars" class="space-y-4"></div>
-            <div class="grid grid-cols-2 gap-3 pt-2">
-              <div class="inset p-3"><div class="text-[11px] text-mut font-bold">Reachable</div><div class="font-display font-extrabold text-2xl text-em" id="hist-reach">0</div></div>
-              <div class="inset p-3"><div class="text-[11px] text-mut font-bold">Flagged void</div><div class="font-display font-extrabold text-2xl text-rose" id="hist-void">0</div></div>
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div class="inset p-3" style="background:var(--leaf-lt)"><div class="text-sm font-bold text-mut">Reachable</div><div class="font-display text-3xl" id="hist-reach">0</div></div>
+              <div class="inset p-3" style="background:var(--verm-lt)"><div class="text-sm font-bold text-mut">Flagged void</div><div class="font-display text-3xl" id="hist-void">0</div></div>
             </div>
           </div>
         </div>
@@ -502,39 +457,67 @@
     </div>
   </section>
 
-  <footer class="border-t border-white/10 py-10 mt-10" style="background:rgba(0,0,0,.4);backdrop-filter:blur(10px)">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row justify-between gap-6 text-sm text-mut">
+  <footer class="py-12" style="background:var(--ink);color:var(--cream)">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row justify-between gap-8">
       <div>
-        <div class="font-display font-extrabold text-ink text-lg">HUNAR <span class="deva text-em">हुनर</span></div>
-        <p class="mt-1 max-w-md">Voice-driven RPL certification and livelihood mapping for the PM-AJAY Grants-in-Aid component. A Smart India Hackathon 2026 prototype; registry data shown is illustrative.</p>
+        <div class="font-display text-3xl" style="color:var(--marigold)">HUNAR <span class="deva">हुनर</span></div>
+        <p class="mt-2 max-w-md" style="color:#d9c9a8">Voice-driven RPL certification and livelihood mapping for the PM-AJAY Grants-in-Aid component. A Smart India Hackathon 2026 prototype; registry data shown is illustrative.</p>
+        <p class="hand mt-3 text-lg" style="color:var(--marigold-lt)">made with chai, mustard oil and too little sleep ✺</p>
       </div>
       <div class="flex flex-wrap items-start gap-3">
         <a class="btn btn-ghost btn-sm" href="hunar-report.html" target="_blank" rel="noopener"><i data-lucide="file-text" class="w-4 h-4"></i>Report (web)</a>
-        <a class="btn btn-ghost btn-sm" href="HUNAR_Executive_Report.docx" download><i data-lucide="file-down" class="w-4 h-4"></i>Report (.docx)</a>
-        <a class="btn btn-ghost btn-sm" href="HUNAR_Executive_Report.pdf" target="_blank" rel="noopener"><i data-lucide="file" class="w-4 h-4"></i>Report (PDF)</a>
+        <a class="btn btn-ghost btn-sm" href="HUNAR_Executive_Report.docx" download><i data-lucide="file-down" class="w-4 h-4"></i>.docx</a>
+        <a class="btn btn-ghost btn-sm" href="HUNAR_Executive_Report.pdf" target="_blank" rel="noopener"><i data-lucide="file" class="w-4 h-4"></i>PDF</a>
       </div>
     </div>
   </footer>
 
   <!-- ================================================================== MODALS -->
+  <div id="sync-modal" class="modal hidden" onclick="if(event.target===this)closeSyncModal()">
+    <div class="modal-card glass max-w-lg w-full p-7 space-y-5 relative">
+      <button onclick="closeSyncModal()" class="absolute top-4 right-4 btn btn-ghost btn-sm !p-2" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <div>
+        <h3 class="font-display text-2xl">Sync</h3>
+        <p class="text-mut">Works offline. Changes are queued on this device and replicate the moment the server is reachable.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="inset p-3"><div class="text-xs font-bold text-mut">Status</div><div class="font-display text-xl mt-1" id="sync-state-big">—</div></div>
+        <div class="inset p-3"><div class="text-xs font-bold text-mut">Kiosks online in room</div><div class="font-display text-xl mt-1" id="sync-online">1</div></div>
+        <div class="inset p-3"><div class="text-xs font-bold text-mut">Waiting to upload</div><div class="font-display text-xl mt-1" id="sync-pending">0</div></div>
+        <div class="inset p-3"><div class="text-xs font-bold text-mut">Last synced</div><div class="font-bold mt-1.5" id="sync-last">never</div></div>
+      </div>
+      <div>
+        <label class="label" for="sync-room-input">Room code (one per CSC or block)</label>
+        <div class="flex gap-3"><input id="sync-room-input" class="field mono" maxlength="40" placeholder="banda-csc-01"><button onclick="joinRoomFromInput()" class="btn btn-primary">Join</button></div>
+        <p class="text-xs text-mut mt-2" id="sync-room-error"></p>
+      </div>
+      <div>
+        <label class="label">Open this room on another device</label>
+        <div class="flex gap-3"><input id="sync-share" class="field mono !text-xs" readonly><button onclick="copyShareLink()" class="btn btn-ghost" id="sync-copy">Copy</button></div>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-mut rule pt-3">
+        <span>Device <b class="mono" id="sync-device"></b></span>
+        <span>Server <b class="mono" id="sync-api"></b></span>
+      </div>
+      <button onclick="HunarSync.syncNow()" class="btn btn-gold btn-block"><i data-lucide="refresh-cw" class="w-4 h-4"></i>Sync now</button>
+    </div>
+  </div>
+
   <div id="nqr-detail-modal" class="modal hidden" onclick="if(event.target===this)closeNQRDetailModal()">
-    <div class="modal-card glass glass-solid max-w-xl w-full p-7 space-y-5 relative">
+    <div class="modal-card glass max-w-xl w-full p-7 space-y-5 relative">
       <button onclick="closeNQRDetailModal()" class="absolute top-4 right-4 btn btn-ghost btn-sm !p-2" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
       <div>
-        <div class="flex items-center gap-2"><span id="detail-category-badge" class="chip chip-gold"></span><span id="detail-qp-code" class="mono text-sm font-bold text-em"></span></div>
-        <h3 id="detail-title" class="font-display font-extrabold text-2xl mt-3 leading-tight"></h3>
-        <p id="detail-sector" class="text-sm text-mut mt-1"></p>
+        <div class="flex items-center gap-2"><span id="detail-category-badge" class="chip chip-gold"></span><span id="detail-qp-code" class="mono font-bold" style="color:var(--indigo)"></span></div>
+        <h3 id="detail-title" class="font-display text-3xl mt-3 leading-tight"></h3>
+        <p id="detail-sector" class="text-mut mt-1"></p>
       </div>
       <div class="grid grid-cols-3 gap-3">
-        <div class="inset p-3"><div class="text-[10px] uppercase tracking-widest text-dim font-bold">NSQF</div><div id="detail-level" class="font-bold text-gold mt-1"></div></div>
-        <div class="inset p-3"><div class="text-[10px] uppercase tracking-widest text-dim font-bold">RPL time</div><div id="detail-rpl" class="font-bold mt-1 text-sm"></div></div>
-        <div class="inset p-3"><div class="text-[10px] uppercase tracking-widest text-dim font-bold">Cost</div><div class="font-bold text-em mt-1">100% free</div></div>
+        <div class="inset p-3"><div class="text-xs uppercase tracking-widest text-dim font-bold">NSQF</div><div id="detail-level" class="font-bold mt-1"></div></div>
+        <div class="inset p-3"><div class="text-xs uppercase tracking-widest text-dim font-bold">RPL time</div><div id="detail-rpl" class="font-bold mt-1 text-sm"></div></div>
+        <div class="inset p-3"><div class="text-xs uppercase tracking-widest text-dim font-bold">Cost</div><div class="font-bold text-em mt-1">100% free</div></div>
       </div>
-      <div>
-        <h4 class="font-bold text-sm mb-2">Core competencies assessed</h4>
-        <ul id="detail-nos-list" class="space-y-2 text-sm text-mut inset p-4"></ul>
-      </div>
-      <div class="inset p-4 text-sm flex items-start gap-2" style="border-color:rgba(52,211,153,.35)"><i data-lucide="map-pin" class="w-4 h-4 text-em mt-0.5 flex-none"></i><span id="detail-center"></span></div>
+      <div><h4 class="font-bold mb-2">Core competencies assessed</h4><ul id="detail-nos-list" class="space-y-2 text-mut inset p-4"></ul></div>
+      <div class="inset p-4 flex items-start gap-2" style="background:var(--leaf-lt)"><i data-lucide="map-pin" class="w-4 h-4 mt-1 flex-none"></i><span id="detail-center" class="font-semibold"></span></div>
       <div class="flex items-center justify-between">
         <button onclick="closeNQRDetailModal()" class="btn btn-ghost">Close</button>
         <button onclick="testThisQualificationInKiosk()" class="btn btn-primary"><i data-lucide="play" class="w-4 h-4"></i>Load into voice desk</button>
@@ -543,17 +526,14 @@
   </div>
 
   <div id="print-modal" class="modal hidden" onclick="if(event.target===this)closePrintModal()">
-    <div class="modal-card glass glass-solid max-w-md w-full p-7 space-y-5 relative">
+    <div class="modal-card glass max-w-md w-full p-7 space-y-5 relative">
       <button onclick="closePrintModal()" class="absolute top-4 right-4 btn btn-ghost btn-sm !p-2" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
-      <div>
-        <h3 class="font-display font-bold text-xl">Action slip</h3>
-        <p class="text-sm text-mut">A4 document for the beneficiary to carry to the centre.</p>
-      </div>
-      <div class="inset p-4 space-y-2 text-sm">
-        <div class="text-[10px] uppercase tracking-[.2em] text-gold font-bold">Hunar livelihood action slip</div>
+      <div><h3 class="font-display text-2xl">Action slip</h3><p class="text-mut">A4 document for the beneficiary to carry to the centre.</p></div>
+      <div class="inset p-4 space-y-2">
+        <div class="hand font-bold text-lg" style="color:var(--verm)">Hunar livelihood action slip</div>
         <div><span class="text-mut">Beneficiary:</span> <b id="preview-user-name"></b></div>
         <div><span class="text-mut">Location:</span> <b id="preview-user-dist"></b></div>
-        <div><span class="text-mut">Trade:</span> <b class="text-em" id="preview-user-trade"></b></div>
+        <div><span class="text-mut">Trade:</span> <b id="preview-user-trade"></b></div>
         <div><span class="text-mut">Centre:</span> <b id="preview-user-center"></b></div>
       </div>
       <div class="flex items-center justify-end gap-3">
@@ -564,39 +544,27 @@
   </div>
 
   <div id="gia-modal" class="modal hidden" onclick="if(event.target===this)closeGIAModal()">
-    <div class="modal-card glass glass-solid max-w-3xl w-full p-6 sm:p-7 relative">
+    <div class="modal-card glass max-w-3xl w-full p-6 sm:p-7 relative">
       <button onclick="closeGIAModal()" class="absolute top-4 right-4 btn btn-ghost btn-sm !p-2" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
-      <h3 class="font-display font-bold text-xl">GIA proposal builder</h3>
-      <p class="text-sm text-mut">Budget = (unserved artisans × per-artisan cost) + mobile tooling van capex.</p>
+      <h3 class="font-display text-2xl">GIA proposal builder</h3>
+      <p class="text-mut">Budget = (unserved artisans × per-artisan cost) + mobile tooling van capex.</p>
       <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mt-5">
         <div class="md:col-span-2 space-y-6">
-          <div>
-            <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Cost per artisan</span><span class="mono text-em" id="gia-per-val">₹15,000</span></div>
-            <input type="range" id="gia-per" min="8000" max="25000" step="500" value="15000" oninput="renderGIAProposal()">
-          </div>
-          <div>
-            <div class="flex justify-between text-sm font-bold mb-3"><span class="text-mut">Mobile van capex</span><span class="mono text-em" id="gia-van-val">₹4,00,000</span></div>
-            <input type="range" id="gia-van" min="200000" max="1200000" step="50000" value="400000" oninput="renderGIAProposal()">
-          </div>
-          <div class="inset p-4">
-            <div class="text-xs text-mut font-bold">Grant justified</div>
-            <div class="stat-num text-gold mt-2" id="gia-total">₹0</div>
-            <div class="text-xs text-dim mt-2" id="gia-per-head"></div>
-          </div>
-          <button onclick="downloadGIAProposal()" class="btn btn-gold btn-block"><i data-lucide="download" class="w-4 h-4"></i>Download proposal PDF</button>
+          <div><div class="flex justify-between font-bold mb-3"><span>Cost per artisan</span><span class="mono" id="gia-per-val" style="color:var(--verm)">₹15,000</span></div><input type="range" id="gia-per" min="8000" max="25000" step="500" value="15000" oninput="renderGIAProposal()"></div>
+          <div><div class="flex justify-between font-bold mb-3"><span>Mobile van capex</span><span class="mono" id="gia-van-val" style="color:var(--verm)">₹4,00,000</span></div><input type="range" id="gia-van" min="200000" max="1200000" step="50000" value="400000" oninput="renderGIAProposal()"></div>
+          <div class="inset p-4" style="background:var(--marigold-lt)"><div class="text-sm font-bold text-mut">Grant justified</div><div class="stat-num mt-2" id="gia-total">₹0</div><div class="text-xs text-mut mt-2" id="gia-per-head"></div></div>
+          <button onclick="downloadGIAProposal()" class="btn btn-gold btn-block"><i data-lucide="download" class="w-4 h-4"></i>Download PDF</button>
         </div>
-        <div class="md:col-span-3">
-          <div id="gia-paper" class="paper p-6 text-[12px] leading-relaxed"></div>
-        </div>
+        <div class="md:col-span-3"><div id="gia-paper" class="paper p-6 text-[12px] leading-relaxed"></div></div>
       </div>
     </div>
   </div>
 
   <div id="cmdk" class="modal hidden" style="align-items:flex-start;padding-top:14vh" onclick="if(event.target===this)closeCmdk()">
-    <div class="modal-card glass glass-solid max-w-lg w-full p-3">
-      <div class="flex items-center gap-3 px-3 py-2 border-b border-white/10">
-        <i data-lucide="search" class="w-4 h-4 text-mut"></i>
-        <input id="cmdk-input" type="text" placeholder="Jump to a view, load a profile, switch district…" class="flex-1 bg-transparent outline-none text-sm font-semibold py-2" oninput="renderCmdk()">
+    <div class="modal-card glass max-w-lg w-full p-3">
+      <div class="flex items-center gap-3 px-3 py-2" style="border-bottom:2.5px solid var(--ink)">
+        <i data-lucide="search" class="w-4 h-4"></i>
+        <input id="cmdk-input" type="text" placeholder="Jump to a view, load a profile, switch district…" class="flex-1 bg-transparent outline-none font-semibold py-2" oninput="renderCmdk()">
         <kbd>esc</kbd>
       </div>
       <div id="cmdk-list" class="py-2 max-h-[46vh] overflow-y-auto"></div>
@@ -606,7 +574,7 @@
   <!-- ================================================================== A4 PDF TEMPLATE (off-screen, light) -->
   <div id="pdf-export-wrapper" style="position: fixed; left: 0; top: 0; width: 720px; z-index: -9999; opacity: 0; pointer-events: none; background: #ffffff;">
     <div id="pdf-clean-export-container" style="width: 700px; margin: 0 auto; padding: 16px; background: #ffffff; box-sizing: border-box;">
-      <div style="width: 100%; border: 3px solid #0F382A; border-radius: 12px; padding: 26px 30px; background: #ffffff; color: #181614; font-family: 'Plus Jakarta Sans', Arial, sans-serif; box-sizing: border-box;">
+      <div style="width: 100%; border: 3px solid #0F382A; border-radius: 12px; padding: 26px 30px; background: #ffffff; color: #181614; font-family: 'Hind', Arial, sans-serif; box-sizing: border-box;">
         <div style="text-align: center; border-bottom: 2px solid #0F382A; padding-bottom: 14px; margin-bottom: 18px;">
           <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #855628; margin-bottom: 4px;">Government of India • Ministry of Social Justice &amp; Empowerment</div>
           <div style="font-size: 20px; font-weight: 900; color: #0F382A; letter-spacing: -0.3px; margin: 4px 0;">HUNAR LIVELIHOOD ACTION SLIP</div>
@@ -642,6 +610,7 @@
   </div>
 
   <script src="scene.js"></script>
+  <script src="sync.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
